@@ -1,15 +1,17 @@
 import 'phaser'
+import candleImg from "../assets/1.png";
 
 export default class SceneBoot extends Phaser.Scene {
     constructor() {
-        super({ key: "SceneBoot" });
+        super('Boot');
     }
 
     preload() {
-
+        this.load.image("candle", candleImg)
     }
 
     create() {
-       this.scene.start("SceneMain");
+        const candle = this.add.image(400, 150, "candle");
+        //this.scene.start("SceneMain");
     }
 }
