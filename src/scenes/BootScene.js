@@ -3,15 +3,23 @@ import candleImg from "../assets/1.png";
 
 export default class SceneBoot extends Phaser.Scene {
     constructor() {
-        super('Boot');
+        super();
     }
 
     preload() {
         this.load.image("candle", candleImg)
     }
 
+    clickButton() {
+        this.scene.switch('Main');
+    }
+
     create() {
-        const candle = this.add.image(400, 150, "candle");
-        //this.scene.start("SceneMain");
+        const candle = this.add.image(500, 150, "candle");
+        var text = this.add.text(100,100, 'Press Here To Start');
+        text.setInteractive({ useHandCursor: true });
+        text.on('pointerdown', () => this.clickButton());
+
     }
 }
+
