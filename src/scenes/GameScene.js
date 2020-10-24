@@ -18,15 +18,23 @@ export default class GameScene extends Phaser.Scene {
 	create() {
 		// array of sprites
 		var sprites = [];
+		let seconds = 60;
+		window.gameOver = false;
+		let interval = setInterval(() => {
+			seconds--;
+			document.getElementById("rooter").innerText = seconds + " seconds left";
+			window.timeLeft = seconds;
+			if (seconds === 0 || window.gameOver) {
+				clearInterval(interval);
+				alert("Game Over. The Score is " + window.timeLeft);
+			}
+		}, 1000);
 
 		let spiritHeight = [];
-		for (var i = 0; i < 10; i++) {
+		for (var i = 0; i < 5; i++) {
 			let spr = this.spawnSprite();
 			sprites += spr;
 			spiritHeight.push(Math.round(spr.children.entries[0].displayHeight));
-			// .map(
-			// 	(elmt) => elmt.displayHeight
-			// );
 		}
 		let biggest = spiritHeight[0];
 		spiritHeight.forEach((elmt) => {
@@ -39,12 +47,13 @@ export default class GameScene extends Phaser.Scene {
 	spawnSprite() {
 		var sprite = this.add.group();
 		// find random coordinate within the screen
-		var ghostX = Phaser.Math.Between(100, width - 100);
-		var ghostY = Phaser.Math.Between(100, height - 100);
+		var ghostX = Phaser.Math.Between(100, width - 200);
+		var ghostY = Phaser.Math.Between(100, height - 200);
 		var ghost = this.add.sprite(ghostX, ghostY, "ghost");
 		// scale ghost to be different sizes
 		var ghostH = Phaser.Math.Between(50, 300);
 		ghost.displayHeight = ghostH;
+		// ghost.body.setGravity(0, -25);
 		ghost.scaleX = ghost.scaleY;
 		ghost.visible = false;
 		sprite.add(ghost);
@@ -61,13 +70,9 @@ export default class GameScene extends Phaser.Scene {
 		candle.on("pointerdown", function (pointer) {
 			this.setTint(0xff0000);
 			ghost.visible = true;
-			if (Math.round(ghost.displayHeight) >= window.biggest) alert("Game Over");
-			// console.log(pointer);
-			// console.log(
-			// 	`pointer pos: ${pointer.position.x} and ${pointer.position.y}`
-			// );
-			// console.log(`candle pos: ${candle.x} and ${candle.y}`);
-			// console.log(`the ghost was ${ghost.displayHeight} big`);
+			if (Math.round(ghost.displayHeight) >= window.biggest) {
+				window.gameOver = true;
+			}
 		});
 		candle.on("pointerout", function (pointer) {
 			this.clearTint();
