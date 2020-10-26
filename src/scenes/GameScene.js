@@ -1,4 +1,5 @@
 import "phaser";
+import io from 'socket.io-client'
 import logoImg from "../assets/logo.png";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
@@ -16,6 +17,11 @@ export default class GameScene extends Phaser.Scene {
 	}
 
 	create() {
+        this.socket = io('http://localhost:3000');
+
+        this.socket.on('connect', function () {
+        	console.log('Connected!');
+        });
 		// array of sprites
 		var sprites = [];
 		let seconds = 60;
