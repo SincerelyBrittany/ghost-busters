@@ -10,19 +10,21 @@ export default class SceneMain extends Phaser.Scene {
 		this.load.image("ghost", ghostImg);
 	}
 
-	// update() {
-	//     const ghost = this.add.image(400, 150, "ghost")
-	// }
-
-	clickButton() {
+	singlePlayerButton() {
 		this.scene.switch("Game");
+	}
+
+	multiplePlayerButton() {
+		this.scene.switch("MultiPlayer");
 	}
 
 	create() {
 		const candle = this.add.image(500, 150, "candle");
-		var text = this.add.text(100, 100, "Single Player Game");
-		text.setInteractive({ useHandCursor: true });
-		text.on("pointerdown", () => this.clickButton());
-		var text = this.add.text(100, 150, "Multiplayer Game - Coming Soon");
+		var singlePlayer = this.add.text(100, 100, "Single Player Game");
+		singlePlayer.setInteractive({ useHandCursor: true });
+		singlePlayer.on("pointerdown", () => this.singlePlayerButton());
+		var multiPlayer = this.add.text(100, 150, "Multiplayer Game - Coming Soon");
+		multiPlayer.setInteractive({ useHandCursor: true });
+		multiPlayer.on("pointerdown", () => this.multiplePlayerButton());
 	}
 }
