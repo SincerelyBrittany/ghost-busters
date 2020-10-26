@@ -1,5 +1,5 @@
 import "phaser";
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 import logoImg from "../assets/logo.png";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
@@ -17,11 +17,11 @@ export default class GameScene extends Phaser.Scene {
 	}
 
 	create() {
-        this.socket = io('http://localhost:3000');
+        // this.socket = io('http://localhost:3000');
 
-        this.socket.on('connect', function () {
-        	console.log('Connected!');
-        });
+        // this.socket.on('connect', function () {
+        // 	console.log('Connected!');
+        // });
 		// array of sprites
 		var sprites = [];
 		let seconds = 60;
@@ -47,8 +47,7 @@ export default class GameScene extends Phaser.Scene {
 			if (elmt > biggest) biggest = elmt;
 		});
 		window.biggest = biggest;
-		// const logo = this.add.image(400, 150, "logo");
-		var text = this.add.text(100, 100, "Welcome To My Game!");
+		// const logo = this.add.image(400, 150, "logo")
 	}
 	spawnSprite() {
 		var sprite = this.add.group();
