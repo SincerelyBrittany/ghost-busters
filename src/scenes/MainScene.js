@@ -23,7 +23,7 @@ export default class SceneMain extends Phaser.Scene {
 		var singlePlayer = this.add.text(100, 100, "Single Player Game");
 		singlePlayer.setInteractive({ useHandCursor: true });
 		singlePlayer.on("pointerdown", () => this.singlePlayerButton());
-		var multiPlayer = this.add.text(100, 150, "Multiplayer Game - Coming Soon");
+		var multiPlayer = this.add.text(100, 150, "Multiplayer Game");
 		multiPlayer.setInteractive({ useHandCursor: true });
 		multiPlayer.on("pointerdown", () => this.multiplePlayerButton());
 	}
