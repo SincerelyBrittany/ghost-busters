@@ -1,5 +1,7 @@
 import 'phaser';
 import logoImg from "../assets/logo.png";
+import candleImg from "../assets/candle.png";
+import ghostImg from "../assets/ghost.jpg";
 
 
 
@@ -10,13 +12,17 @@ export default class GameScene extends Phaser.Scene{
 
     preload(){
         this.load.image("logo", logoImg);
+        this.load.image("candle", candleImg);
     }
 
     create() {
+        this.physics.world.setBoundsCollision(true, true, true, true);
+        this.logo = this.physics.add.image(200, 300, 'logo').setCollideWorldBounds(true).setBounce(.5);
+
         //time for game
         this.initialTime = 30;
         this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
-        this.image = this.add.image(400, 300, 'logo');
+        
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
     }
 
