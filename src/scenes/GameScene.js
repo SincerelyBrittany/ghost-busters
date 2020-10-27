@@ -65,6 +65,7 @@ export default class GameScene extends Phaser.Scene{
         return `${minutes}:${partInSeconds}`;
     }
 
+    //Do Game Over in here!
     update() {
         if (this.initialTime <= 0){
             //Modify to show score? and hide sprites
