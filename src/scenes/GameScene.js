@@ -19,22 +19,16 @@ export default class GameScene extends Phaser.Scene {
 		this.load.image("candle", candleImg);
 	}
 
-	create() {
-		// array of sprites
-		var sprites = [];
-		let seconds = 60;
-		window.gameOver = false;
-		let interval = setInterval(() => {
-			seconds--;
-			document.getElementById("rooter").innerText = seconds + " seconds left";
-			window.timeLeft = seconds;
-			if (seconds === 0 || window.gameOver) {
-				clearInterval(interval);
-				alert("Game Over. The Score is " + window.timeLeft);
-			}
-		}, 1000);
+    create() {
+        //time for game
+        this.initialTime = 30;
+        this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
+        this.image = this.add.image(400, 300, 'logo');
+        this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
 
-		let spiritHeight = [];
+        // array of sprites
+		var sprites = [];
+        let spiritHeight = [];
 		for (var i = 0; i < 5; i++) {
 			let spr = this.spawnSprite();
 			sprites += spr;
@@ -45,6 +39,29 @@ export default class GameScene extends Phaser.Scene {
 			if (elmt > biggest) biggest = elmt;
 		});
 		window.biggest = biggest;
+    }
+
+    formatTime(seconds){
+        var minutes = Math.floor(seconds/60);
+        var partInSeconds = seconds%60;
+        partInSeconds = partInSeconds.toString().padStart(2,'0');
+        // Returns formated time
+        return `${minutes}:${partInSeconds}`;
+    }
+
+    update() {
+        if (this.initialTime <= 0){
+            //Modify to show score? and hide sprites
+            this.text.setText('Game Over');
+        }
+    }
+
+    onEvent () {
+        this.initialTime -= 1;
+        this.text.setText('Time Remaining: ' + this.formatTime(this.initialTime));
+        if (this.initialTime <= 0){
+            this.timedEvent.remove(false);
+        }
     }
     
 	spawnSprite() {
