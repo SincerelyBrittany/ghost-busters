@@ -4,18 +4,21 @@ import ghostImg from "../assets/ghost.jpg";
 export default class SceneMain extends Phaser.Scene {
 	constructor() {
 		super("Main");
-	}
+    }
+    init(data) {
+        this.socket = data.socket;
+    }
 
 	create() {
 		this.load.image("ghost", ghostImg);
 	}
 
 	singlePlayerButton() {
-		this.scene.switch("Game");
+		this.scene.start("Game", { socket: this.socket });
 	}
 
-	multiplePlayerButton() {
-		this.scene.switch("MultiPlayer");
+	multiplePlayerHomeButton() {
+		this.scene.start("MultiPlayerHome", { socket: this.socket });
 	}
 
 	create() {
@@ -25,6 +28,6 @@ export default class SceneMain extends Phaser.Scene {
 		singlePlayer.on("pointerdown", () => this.singlePlayerButton());
 		var multiPlayer = this.add.text(100, 150, "Multiplayer Game");
 		multiPlayer.setInteractive({ useHandCursor: true });
-		multiPlayer.on("pointerdown", () => this.multiplePlayerButton());
+		multiPlayer.on("pointerdown", () => this.multiplePlayerHomeButton());
 	}
 }

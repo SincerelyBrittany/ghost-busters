@@ -1,15 +1,18 @@
 import "phaser";
-// import io from 'socket.io-client'
 import logoImg from "../assets/logo.png";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
 import config from "../config/config";
 const width = config.width;
 const height = config.height;
+
 export default class GameScene extends Phaser.Scene {
 	constructor() {
 		super("Game");
-	}
+    }
+    init(data) {
+        this.socket = data.socket;
+    }
 	preload() {
 		this.load.image("logo", logoImg);
 		this.load.image("ghost", ghostImg);
@@ -17,11 +20,6 @@ export default class GameScene extends Phaser.Scene {
 	}
 
 	create() {
-        // this.socket = io('http://localhost:3000');
-
-        // this.socket.on('connect', function () {
-        // 	console.log('Connected!');
-        // });
 		// array of sprites
 		var sprites = [];
 		let seconds = 60;
@@ -47,8 +45,8 @@ export default class GameScene extends Phaser.Scene {
 			if (elmt > biggest) biggest = elmt;
 		});
 		window.biggest = biggest;
-		// const logo = this.add.image(400, 150, "logo")
-	}
+    }
+    
 	spawnSprite() {
 		var sprite = this.add.group();
 		// find random coordinate within the screen

@@ -6,6 +6,9 @@ export default class SceneBoot extends Phaser.Scene {
     constructor() {
         super();
     }
+    init(data) {
+        this.socket = data.socket;
+    }
 
     preload() {
         this.load.image("candle", candleImg)
@@ -13,7 +16,7 @@ export default class SceneBoot extends Phaser.Scene {
     }
 
     clickButton() {
-        this.scene.switch('Main');
+        this.scene.start('Main', { socket: this.socket });
     }
 
     create() {
@@ -23,4 +26,3 @@ export default class SceneBoot extends Phaser.Scene {
         text.on('pointerdown', () => this.clickButton());
     }
 }
-
