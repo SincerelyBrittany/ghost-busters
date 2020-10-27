@@ -17,33 +17,13 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 	preload() {
 		this.load.image("logo", logoImg);
 		this.load.image("ghost", ghostImg);
-        this.load.image("candle", candleImg);
-	}
-
+		this.load.image("candle", candleImg);
+    }
 	create() {
-        var text = this.add.text(10,10, `Room Code: ${this.gameCode}`)
-        text.setFontSize(30);
-
-        console.log(this.gameCode);
-        for (i = 0; i < this.users.length; i++) {
-            console.log(this.users[i]);
-        }
-
-		// array of sprites
-		var sprites = [];
-		let seconds = 60;
 		window.gameOver = false;
-		let interval = setInterval(() => {
-			seconds--;
-			document.getElementById("rooter").innerText = seconds + " seconds left";
-			window.timeLeft = seconds;
-			if (seconds === 0 || window.gameOver) {
-				clearInterval(interval);
-				alert("Game Over. The Score is " + window.timeLeft);
-			}
-		}, 1000);
-
-		let spiritHeight = [];
+        let spiritHeight = [];
+        // array of sprites
+        var sprites = [];
 		for (var i = 0; i < 5; i++) {
 			let spr = this.spawnSprite();
 			sprites += spr;
@@ -54,6 +34,10 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 			if (elmt > biggest) biggest = elmt;
 		});
 		window.biggest = biggest;
+            //time for game
+        this.initialTime = 30;
+        this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
+        this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
 	}
 	spawnSprite() {
 		var sprite = this.add.group();
@@ -69,20 +53,19 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 		ghost.visible = false;
 		sprite.add(ghost);
 		// find relative position for candle
-		var candleX = ghostX - ghost.displayWidth / 3;
-		var candleY = ghostY - ghost.displayHeight / 3;
+		var candleX = ghostX - ghost.displayWidth / 3 - 50;
+		var candleY = ghostY - ghost.displayHeight / 3 - 50;
 		var candle = this.add.sprite(candleX, candleY, "candle").setInteractive();
-		// scale candle to be sized the same
+		// scale candle to be different sizes
 		var h = 100;
-		candle.displayHeight = h;
-
-		candle.scaleX = candle.scaleY;
+        candle.displayHeight = h;
+        candle.scaleX = candle.scaleY;
 		// on candle click
 		candle.on("pointerdown", function (pointer) {
 			this.setTint(0xff0000);
 			ghost.visible = true;
 			if (Math.round(ghost.displayHeight) >= window.biggest) {
-				window.gameOver = true;
+                window.gameOver = true;
 			}
 		});
 		candle.on("pointerout", function (pointer) {
@@ -94,5 +77,27 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 		sprite.add(candle);
 		return sprite;
 	}
-	update() {}
+
+    formatTime(seconds){
+        var minutes = Math.floor(seconds/60);
+        var partInSeconds = seconds%60;
+        partInSeconds = partInSeconds.toString().padStart(2,'0');
+        // Returns formated time
+        return `${minutes}:${partInSeconds}`;
+    }
+
+    update() {
+        if (this.initialTime <= 0 || window.gameOver){
+            //Modify to show score? and hide sprites
+            this.text.setText(`Game Over. You have a score of ${this.initialTime}`);
+        }
+    }
+
+    onEvent () {
+        this.initialTime -= 1;
+        this.text.setText('Time Remaining: ' + this.formatTime(this.initialTime));
+        if (this.initialTime <= 0 || window.gameOver){
+            this.timedEvent.remove(false);
+        }
+    }
 }
