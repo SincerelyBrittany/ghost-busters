@@ -13,6 +13,7 @@ export default class GameScene extends Phaser.Scene{
     preload(){
         this.load.image("logo", logoImg);
         this.load.image("candle", candleImg);
+        this.load.image('ghost', ghostImg);
     }
 
     create() {
@@ -28,7 +29,7 @@ export default class GameScene extends Phaser.Scene{
             this.block = this.physics.add.sprite(this.pos.x, this.pos.y, 'candle');
 
             //velocity setter
-            //this.block.setVelocity(Phaser.Math.Between(200, 300), Phaser.Math.Between(200, 300));
+            this.block.setVelocity(Phaser.Math.Between(200, 300), Phaser.Math.Between(200, 300));
             this.block.setBounce(1).setCollideWorldBounds(true);
             if (Math.random() > 0.5){
                 this.block.body.velocity.x *= -1;
@@ -40,14 +41,15 @@ export default class GameScene extends Phaser.Scene{
             //candle interactions
             this.block.setInteractive();
             this.block.on('clicked', this.clickHandler, this);
+            console.log("candle create");
         }
 
         //If candle is clicked on, the event is fired. It will emit 'clicked' event.
-        this.input.on('gameobject', function (pointer, gameObject){
+        this.input.on('gameobjectup', function (pointer, gameObject){
             gameObject.emit('clicked', gameObject);
         }, this);
         
-        
+
         //time for game
         this.initialTime = 30;
         this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
@@ -75,6 +77,8 @@ export default class GameScene extends Phaser.Scene{
         block.off("clicked", this.clickHandler);
         block.input.enabled = false;
         block.setVisible(false);
+
+        block = this.add.image(block.x , block.y ,'ghost');
     }
 
     onEvent () {
