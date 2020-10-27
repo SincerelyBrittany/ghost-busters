@@ -20,10 +20,13 @@ export default class GameScene extends Phaser.Scene {
 	}
 
     create() {
+        this.physics.world.setBoundsCollision(true, true, true, true);
+        this.logo = this.physics.add.image(200, 300, 'logo').setCollideWorldBounds(true).setBounce(.5);
+
         //time for game
         this.initialTime = 30;
         this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
-        this.image = this.add.image(400, 300, 'logo');
+        
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
 
         // array of sprites

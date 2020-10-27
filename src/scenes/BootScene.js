@@ -1,6 +1,5 @@
 import 'phaser'
 import candleImg from "../assets/candle.png";
-import ghostImg from '../assets/ghost.png';
 
 export default class SceneBoot extends Phaser.Scene {
     constructor() {
@@ -12,7 +11,6 @@ export default class SceneBoot extends Phaser.Scene {
 
     preload() {
         this.load.image("candle", candleImg)
-        this.load.image('ghost', ghostImg);
     }
 
     clickButton() {

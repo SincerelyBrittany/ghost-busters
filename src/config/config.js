@@ -6,4 +6,7 @@ export default {
     dom: {
         createContainer: true
     },
+    physics:{
+      default: 'arcade'
+    }
   };
