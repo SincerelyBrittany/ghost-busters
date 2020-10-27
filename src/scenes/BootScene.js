@@ -1,5 +1,6 @@
 import 'phaser'
-import candleImg from "../assets/1.png";
+import candleImg from "../assets/candle.png";
+import ghostImg from '../assets/ghost.png';
 
 export default class SceneBoot extends Phaser.Scene {
     constructor() {
@@ -8,6 +9,7 @@ export default class SceneBoot extends Phaser.Scene {
 
     preload() {
         this.load.image("candle", candleImg)
+        this.load.image('ghost', ghostImg);
     }
 
     clickButton() {
@@ -19,7 +21,6 @@ export default class SceneBoot extends Phaser.Scene {
         var text = this.add.text(100,100, 'Press Here To Start');
         text.setInteractive({ useHandCursor: true });
         text.on('pointerdown', () => this.clickButton());
-
     }
 }
 
