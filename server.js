@@ -15,44 +15,27 @@ io.on('connection', function (socket) {
         players = players.filter(player => player !== socket.id);
     });
 
-    socket.on('newGame', handleNewGame);
-    
-    function handleNewGame() {
+    socket.on('newGame', () => {
         var roomName = makeId(5);
         console.log(roomName);
         rooms[socket.id] = roomName;
-        // state[roomName] = initGame();
         socket.join(roomName);
-        return roomName;
-    }
+        socket.emit('newGame', roomName);
+    });
 
-    socket.on('joinGame', handleJoinGame);
-    function handleJoinGame(roomName) {
+    socket.on('joinGame', (roomName) => {
         const room = io.sockets.adapter.rooms[roomName];
-        console.log('room' + room.length)
-        let allUsers;
-        if (room) {
-            allUsers = room.sockets;
-        }
-
-        let numSockets = 0;
-        if (allUsers) {
-            numSockets = Object.keys(allUsers).length;
-        }
-
-        if (numSockets === 0) {
+        if (room){
+            rooms[socket.id] = roomName;
+            socket.join(roomName);
+            console.log(room.sockets)
+            socket.emit('joinGame');
+            console.log(`new user ${socket.id} joined room ${socket.room}`);
+        } else {
             socket.emit('unknownCode');
-        return;
-        } else if (numClients > 1) {
-            socket.emit('tooManyPlayers');
-        return;
         }
+    });
 
-        rooms[socket.id] = roomName;
-
-        socket.join(roomName);
-        socket.number = 2;
-    }
     function makeId(length) {
         var result           = '';
         var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

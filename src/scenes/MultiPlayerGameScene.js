@@ -38,6 +38,7 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.initialTime = 30;
         this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
+        this.add.text(600,32, `Room Code: ${this.gameCode}`)
 	}
 	spawnSprite() {
 		var sprite = this.add.group();
