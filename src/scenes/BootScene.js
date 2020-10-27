@@ -1,5 +1,5 @@
 import 'phaser'
-import candleImg from "../assets/1.png";
+import candleImg from "../assets/candle.png";
 
 export default class SceneBoot extends Phaser.Scene {
     constructor() {

@@ -1,5 +1,5 @@
 import 'phaser';
-import ghostImg from "../assets/ghost.jpg"
+import ghostImg from "../assets/ghost.png"
 
 export default class SceneMain extends Phaser.Scene {
     constructor() {
