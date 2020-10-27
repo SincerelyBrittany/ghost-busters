@@ -1,8 +1,7 @@
 import 'phaser';
 import logoImg from "../assets/logo.png";
 import candleImg from "../assets/candle.png";
-import ghostImg from "../assets/ghost.jpg";
-
+import ghostImg from "../assets/ghost.png";
 
 
 export default class GameScene extends Phaser.Scene{
