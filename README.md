@@ -137,7 +137,7 @@ Brittany:
 [![Twitter][brittany-twitter-shield]][brittany-twitter-url]
 [![Linkedin][linkedin-shield]][brittany-linkedin-url]
 [![Dev.to][dev-to-shield]][brittany-dev-to-url]
-[![Github.com][brittany-github-shield]][brittany-github-url]]
+<!-- [![Github.com][brittany-github-shield]][brittany-github-url]] -->
 
 
 Remi:
@@ -168,7 +168,7 @@ SincerelyBrittany/ghost-busters
 [license-url]: https://github.com/SincerelyBrittany/ghost-busters/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [dev-to-shield]:https://img.shields.io/badge/-Dev.to-black.svg?style=flat-square&logo=dev.to&colorB=555
-[product-screenshot]: url
+<!-- [product-screenshot]: url -->
 
 <!-- Brittany Social Media  -->
 [brittany-linkedin-url]: https://www.linkedin.com/in/sincerelybrittany/
