@@ -87,9 +87,12 @@ git clone https://github.com/https://github.com/SincerelyBrittany/ghost-busters.
 3. Install NPM packages
 ```sh
 npm install
-4. Start the application
+```
+3. Start the program
 ```sh
 npm start
+```
+
 
 <!-- USAGE EXAMPLES -->
 ## Usage
