@@ -12,15 +12,15 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">Ghost Busters</h3>
 
   <p align="center">
-    A game using Phaser
+    This is the second project/sprint built for the MLH Explorer Fellowship, built by <a href="https://github.com/shivaylamba"> Shivay Lamba </a> , <a href="https://github.com/ohitsremi">Remi Srijunyanont </a>, and <a href="https://github.com/SincerelyBrittany"> Brittany </a>, and <a href="https://github.com/n-mathis"> Nana </a>. The goal for this sprint was to create a Game using any framwork that we wanted. With this in mind, and given the time of the year, we came up with a Halloween game idea. The objective is for a player to catch as many ghost, which are underneath a candle, as fast as they can before the timer runs out. This application was built in a two week span. 
     <br />
     <a href="https://github.com/SincerelyBrittany/ghost-busters"><strong>Explore the docs »</strong></a>
     <br />
-    <br />
-    <a href="https://github.com/SincerelyBrittany/ghost-busters">View Demo</a>
+    <!-- <br />
+    <a href="https://github.com/SincerelyBrittany/ghost-busters">View Demo</a> -->
     ·
     <a href="https://github.com/SincerelyBrittany/ghost-busters/issues">Report Bug</a>
     ·
@@ -54,7 +54,7 @@
 
 
 ### Built With
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+
 * [Phaser 3](https://phaser.io/)
 * [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
@@ -63,8 +63,7 @@ This section should list any major frameworks that you built your project using.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get the projec up and running locally on your computer please follow the installation guide below. 
 
 ### Prerequisites
 
@@ -76,12 +75,11 @@ npm install npm@latest -g
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
 ```sh
 git clone https://github.com/https://github.com/SincerelyBrittany/ghost-busters.git
 ```
-3. Install NPM packages
+2. Install NPM packages
 ```sh
 npm install
 ```
@@ -92,20 +90,13 @@ npm start
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
+<!-- ## Usage -->
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
 See the [open issues](https://github.com/SincerelyBrittany/ghost-busters/issues) for a list of proposed features (and known issues).
-
-
 
 <!-- CONTRIBUTING -->
 ## Contributing
