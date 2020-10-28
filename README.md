@@ -9,7 +9,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/SincerelyBrittany/ghost-busters">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://github.com/SincerelyBrittany/ghost-busters/blob/readme/public/start-page.png" alt="Logo">
   </a>
 
   <h3 align="center">Ghost Busters</h3>
@@ -155,7 +155,7 @@ Shivay:
 [license-url]: https://github.com/SincerelyBrittany/ghost-busters/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [dev-to-shield]:https://img.shields.io/badge/-Dev.to-black.svg?style=flat-square&logo=dev.to&colorB=555
-<!-- [product-screenshot]: url -->
+[product-screenshot]: https://github.com/SincerelyBrittany/ghost-busters/blob/readme/public/sample-gif.gif
 
 <!-- Brittany Social Media  -->
 [brittany-linkedin-url]: https://www.linkedin.com/in/sincerelybrittany/
