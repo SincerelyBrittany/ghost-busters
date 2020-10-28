@@ -156,7 +156,6 @@ Shivay:
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/SincerelyBrittany/ghost-busters.svg?style=flat-square
-SincerelyBrittany/ghost-busters
 [contributors-url]: https://github.com/SincerelyBrittany/ghost-busters/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/SincerelyBrittany/ghost-busters.svg?style=flat-square
 [forks-url]: https://github.com/SincerelyBrittany/ghost-busters/network/members
