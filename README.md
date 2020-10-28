@@ -179,22 +179,22 @@ SincerelyBrittany/ghost-busters
 [brittany-dev-to-url]: https://dev.to/sincerelybrittany
 
 <!-- Remi Social Media  -->
-[remi-linkedin-url]: https://www.linkedin.com/in/username/
+<!-- [remi-linkedin-url]: https://www.linkedin.com/in/username/
 [remi-twitter-shield]:https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fusername
 [remi-twitter-url]: https://twitter.com/usernmae
 [remi-github-shield]: https://img.shields.io/github/followers/username?label=Follow%20on%20Github&style=social
-[remi-dev-to-url]: https://dev.to/username
+[remi-dev-to-url]: https://dev.to/username -->
 
 <!-- Nana Social Media  -->
-[nana-linkedin-url]: https://www.linkedin.com/in/username/
+<!-- [nana-linkedin-url]: https://www.linkedin.com/in/username/
 [nana-twitter-shield]:https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fusername
 [nana-twitter-url]: https://twitter.com/usernmae
 [nana-github-shield]: https://img.shields.io/github/followers/username?label=Follow%20on%20Github&style=social
-[nana-dev-to-url]: https://dev.to/username
+[nana-dev-to-url]: https://dev.to/username -->
 
 <!-- Shivay Social Media  -->
-[shivay-linkedin-url]: https://www.linkedin.com/in/username/
+<!-- [shivay-linkedin-url]: https://www.linkedin.com/in/username/
 [shivay-twitter-shield]:https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fusername
 [shivay-twitter-url]: https://twitter.com/usernmae
 [shivay-github-shield]: https://img.shields.io/github/followers/username?label=Follow%20on%20Github&style=social
-[shivay-dev-to-url]: https://dev.to/username
+[shivay-dev-to-url]: https://dev.to/username -->
