@@ -137,7 +137,7 @@ Brittany:
 [![Twitter][brittany-twitter-shield]][brittany-twitter-url]
 [![Linkedin][linkedin-shield]][brittany-linkedin-url]
 [![Dev.to][dev-to-shield]][brittany-dev-to-url]
-<!-- [![Github.com][brittany-github-shield]][brittany-github-url]] -->
+[![Github.com][brittany-github-shield]][brittany-github-url]]
 
 
 Remi:
