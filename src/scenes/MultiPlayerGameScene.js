@@ -10,74 +10,76 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 	constructor() {
 		super("MultiPlayerGame");
     }
+
     init(data) {
         this.gameCode = data.gameCode;
         this.users = data.users;
     }
-	preload() {
-		this.load.image("logo", logoImg);
-		this.load.image("ghost", ghostImg);
-		this.load.image("candle", candleImg);
+
+	preload(){
+        this.load.image("logo", logoImg);
+        this.load.image("candle", candleImg);
+        this.load.image('ghost', ghostImg);
     }
+
 	create() {
-		window.gameOver = false;
-        let spiritHeight = [];
-        // array of sprites
-        var sprites = [];
-		for (var i = 0; i < 5; i++) {
-			let spr = this.spawnSprite();
-			sprites += spr;
-			spiritHeight.push(Math.round(spr.children.entries[0].displayHeight));
-		}
-		let biggest = spiritHeight[0];
-		spiritHeight.forEach((elmt) => {
-			if (elmt > biggest) biggest = elmt;
-		});
-		window.biggest = biggest;
-            //time for game
+		//Boundaries
+        this.physics.world.setBoundsCollision(true, true, true, true);
+        //Manual Boundaries
+        //this.physics.world.setBounds(0, 0, 800, 600);
+
+        this.spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(this.physics.world.bounds), -100, -100);
+        
+        window.gameOver = false;
+        let ghostSizes = [];
+        
+        for (var i = 0; i < 3; i++){
+            this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
+            var candle = this.add.image(0,0, 'candle');
+            var ghost = this.add.image(0, 0, 'ghost');
+            let randSize = Phaser.Math.Between(1,3);
+            ghost.setScale(randSize);
+            ghostSizes.push(ghost.displayHeight);
+            this.block = this.add.container(this.pos.x, this.pos.y, [candle, ghost])
+            this.block.setSize(64,128);
+            this.physics.world.enable(this.block);
+            ghost.visible = false;
+
+            //velocity setter
+            this.block.body.setVelocity(Phaser.Math.Between(200, 300), Phaser.Math.Between(200, 300));
+            this.block.body.setBounce(1).setCollideWorldBounds(true);
+            if (Math.random() > 0.5){
+                this.block.body.velocity.x *= -1;
+            }
+            else {
+                this.block.body.velocity.y *= -1;
+            }
+
+            //candle interactions
+            this.block.setInteractive();
+            this.block.on('clicked', this.clickHandler, this);
+            console.log("candle create");
+        }
+
+        let biggestGhost = ghostSizes[0];
+        ghostSizes.forEach((ghost) => {
+            if (ghost > biggestGhost) {
+                biggestGhost = ghost;
+            }
+        })
+        window.biggestGhost = biggestGhost;
+        //If candle is clicked on, the event is fired. It will emit 'clicked' event.
+        this.input.on('gameobjectup', function (pointer, gameObject){
+            gameObject.emit('clicked', gameObject);
+        }, this);
+        
+
+        //time for game
         this.initialTime = 30;
         this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         this.add.text(600,32, `Room Code: ${this.gameCode}`)
-	}
-	spawnSprite() {
-		var sprite = this.add.group();
-		// find random coordinate within the screen
-		var ghostX = Phaser.Math.Between(100, width - 200);
-		var ghostY = Phaser.Math.Between(150, height - 200);
-		var ghost = this.add.sprite(ghostX, ghostY, "ghost");
-		// scale ghost to be different sizes
-		var ghostH = Phaser.Math.Between(50, 300);
-		ghost.displayHeight = ghostH;
-		// ghost.body.setGravity(0, -25);
-		ghost.scaleX = ghost.scaleY;
-		ghost.visible = false;
-		sprite.add(ghost);
-		// find relative position for candle
-		var candleX = ghostX - ghost.displayWidth / 3 - 50;
-		var candleY = ghostY - ghost.displayHeight / 3 - 50;
-		var candle = this.add.sprite(candleX, candleY, "candle").setInteractive();
-		// scale candle to be different sizes
-		var h = 100;
-        candle.displayHeight = h;
-        candle.scaleX = candle.scaleY;
-		// on candle click
-		candle.on("pointerdown", function (pointer) {
-			this.setTint(0xff0000);
-			ghost.visible = true;
-			if (Math.round(ghost.displayHeight) >= window.biggest) {
-                window.gameOver = true;
-			}
-		});
-		candle.on("pointerout", function (pointer) {
-			this.clearTint();
-		});
-		candle.on("pointerup", function (pointer) {
-			this.clearTint();
-		});
-		sprite.add(candle);
-		return sprite;
-	}
+    }
 
     formatTime(seconds){
         var minutes = Math.floor(seconds/60);
@@ -85,12 +87,26 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         partInSeconds = partInSeconds.toString().padStart(2,'0');
         // Returns formated time
         return `${minutes}:${partInSeconds}`;
-    }
+	}
 
+    //Do Game Over in here!
     update() {
         if (this.initialTime <= 0 || window.gameOver){
             //Modify to show score? and hide sprites
             this.text.setText(`Game Over. You have a score of ${this.initialTime}`);
+        }
+    }
+
+    clickHandler(block){
+        console.log("Click Handler");
+        block.off("clicked", this.clickHandler);
+        block.input.enabled = false;
+        block.list[0].setVisible(false);
+        block.list[1].setVisible(true);
+        block.body.setVelocity(0);
+        if (block.list[1].displayHeight >= window.biggestGhost) {
+            window.gameOver = true;
+            console.log(window.biggestGhost);
         }
     }
 
