@@ -3,23 +3,38 @@ const http = require('http').createServer(server);
 const io = require('socket.io')(http);
 
 let players = [];
+var objects = {};
 const rooms = {};
-const state = {};
+
 io.on('connection', function (socket) {
     console.log('A user connected: ' + socket.id);
 
     players.push(socket.id);
 
-    socket.on('disconnect', function () {
-        console.log('A user disconnected: ' + socket.id);
-        players = players.filter(player => player !== socket.id);
+    // update the objects to have the client's state of the sprites
+    socket.on('sprites', (sprites) => {
+        Object.keys(sprites).forEach(key => {
+            var sprite = sprites[key];
+            // console.log(`${key} was clicked: ${sprite['clicked']}`);
+            objects[key] = sprite;
+        })
+        // make sure the all the other client objects are updated as well
+        socket.emit('updateCandles', objects);
+    })
+
+    // communicate that a object/sprite has beeen clicked
+    socket.on('clicked', (key) => {
+        objects[key]['clicked'] = true;
+        // tell other users that the specific sprite has been clicked
+        socket.broadcast.emit('updateCandles', objects);
     });
 
     socket.on('newGame', () => {
         var roomName = makeId(5);
-        console.log(roomName);
+        console.log(`user ${socket.id} created room ${roomName}`);
         rooms[socket.id] = roomName;
         socket.join(roomName);
+        const room = io.sockets.adapter.rooms[roomName];
         socket.emit('newGame', roomName);
     });
 
@@ -28,13 +43,29 @@ io.on('connection', function (socket) {
         if (room){
             rooms[socket.id] = roomName;
             socket.join(roomName);
-            console.log(room.sockets)
+            console.log(room.sockets);
             socket.emit('joinGame');
-            console.log(`new user ${socket.id} joined room ${socket.room}`);
+            console.log(`new user ${socket.id} joined room ${roomName}`);
+            socket.to(roomName).emit('newPlayer', socket.id);
+            // FOR SOME REASON THIS DOESN'T EMIT :()
+            socket.emit('getPlayers', getPlayers());
         } else {
             socket.emit('unknownCode');
         }
     });
+
+    function getPlayers() {
+        var players = [];
+        Object.keys(io.sockets.connected).forEach((socketID) => {
+            var player = io.sockets.connected[socketID].id;
+            
+            if(player) {
+                players.push(player);
+            }
+        });
+        console.log(players);
+        return players;
+    }
 
     function makeId(length) {
         var result           = '';
@@ -45,6 +76,12 @@ io.on('connection', function (socket) {
         }
         return result;
      }
+
+     socket.on('disconnect', function () {
+        console.log('A user disconnected: ' + socket.id);
+        players = players.filter(player => player !== socket.id);
+    });
+
 });
 
 

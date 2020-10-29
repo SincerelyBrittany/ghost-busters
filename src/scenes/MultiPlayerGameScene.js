@@ -2,9 +2,8 @@ import "phaser";
 import logoImg from "../assets/logo.png";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
-import config from "../config/config";
-const width = config.width;
-const height = config.height;
+
+var sprites = {};
 
 export default class MultiPlayerGameScene extends Phaser.Scene {
 	constructor() {
@@ -12,8 +11,8 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
     }
 
     init(data) {
+        this.socket = data.socket;
         this.gameCode = data.gameCode;
-        this.users = data.users;
     }
 
 	preload(){
@@ -31,8 +30,8 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(this.physics.world.bounds), -100, -100);
         
         window.gameOver = false;
+
         let ghostSizes = [];
-        
         for (var i = 0; i < 3; i++){
             this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
@@ -44,6 +43,14 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             this.block.setSize(64,128);
             this.physics.world.enable(this.block);
             ghost.visible = false;
+            this.block.setData('key', i);
+
+            sprites[i] = {
+                clicked: false,
+                container: this.block,
+                candle: this.block.list[0],
+                ghost: this.block.list[1]
+            };
 
             //velocity setter
             this.block.body.setVelocity(Phaser.Math.Between(200, 300), Phaser.Math.Between(200, 300));
@@ -58,7 +65,6 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             //candle interactions
             this.block.setInteractive();
             this.block.on('clicked', this.clickHandler, this);
-            console.log("candle create");
         }
 
         let biggestGhost = ghostSizes[0];
@@ -70,9 +76,11 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         window.biggestGhost = biggestGhost;
         //If candle is clicked on, the event is fired. It will emit 'clicked' event.
         this.input.on('gameobjectup', function (pointer, gameObject){
-            gameObject.emit('clicked', gameObject);
+            gameObject.emit('clicked', gameObject.getData('key'));
         }, this);
         
+        // update sprites if they're clicked
+        this.socket.emit('sprites', sprites);
 
         //time for game
         this.initialTime = 30;
@@ -91,23 +99,38 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 
     //Do Game Over in here!
     update() {
+        // make sure to continously update whether a candle was clicked on the server
+        this.socket.on('updateCandles', (candles) => {
+            Object.keys(candles).forEach(key => {
+                if (candles[key]['clicked']) {
+                    sprites[key]['container'].off("clicked", this.clickHandler);
+                    sprites[key]['container'].input.enabled = false;
+                    sprites[key]['candle'].setVisible(false);
+                    sprites[key]['ghost'].setVisible(true);
+                    sprites[key]['container'].body.setVelocity(0);
+                    if (sprites[key]['ghost'].displayHeight >= window.biggestGhost) {
+                        window.gameOver = true;
+                    }
+                }
+            });
+        });
+
         if (this.initialTime <= 0 || window.gameOver){
             //Modify to show score? and hide sprites
             this.text.setText(`Game Over. You have a score of ${this.initialTime}`);
         }
     }
 
-    clickHandler(block){
-        console.log("Click Handler");
-        block.off("clicked", this.clickHandler);
-        block.input.enabled = false;
-        block.list[0].setVisible(false);
-        block.list[1].setVisible(true);
-        block.body.setVelocity(0);
-        if (block.list[1].displayHeight >= window.biggestGhost) {
+    clickHandler(key){
+        sprites[key]['container'].off("clicked", this.clickHandler);
+        sprites[key]['container'].input.enabled = false;
+        sprites[key]['candle'].setVisible(false);
+        sprites[key]['ghost'].setVisible(true);
+        sprites[key]['container'].body.setVelocity(0);
+        if (sprites[key]['ghost'].displayHeight >= window.biggestGhost) {
             window.gameOver = true;
-            console.log(window.biggestGhost);
         }
+        this.socket.emit("clicked", key);
     }
 
     onEvent () {

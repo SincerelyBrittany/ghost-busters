@@ -1,7 +1,4 @@
 import "phaser";
-import config from "../config/config";
-const width = config.width;
-const height = config.height;
 
 export default class MultiPlayerHomeScene extends Phaser.Scene {
 	constructor() {
@@ -36,7 +33,7 @@ export default class MultiPlayerHomeScene extends Phaser.Scene {
                     text = this.add.text(320,350, 'Invalid game code.')
                 });
                 this.socket.on('joinGame', () => {
-                    this.scene.start('MultiPlayerGame', { gameCode: gameCode.value, users: [this.socket.id]});
+                    this.scene.start('MultiPlayerGame', {socket: this.socket, gameCode: gameCode.value});
                 });
             } else {
                 text = this.add.text(250,100, "Submit game code or create new game");
@@ -44,7 +41,7 @@ export default class MultiPlayerHomeScene extends Phaser.Scene {
         });
         this.socket.on('newGame', (gameCode) => {
             console.log(gameCode);
-            this.scene.start('MultiPlayerGame', { gameCode: gameCode, users: [this.socket.id]});
+            this.scene.start('MultiPlayerGame', {socket: this.socket, gameCode: gameCode});
         });
 
 
