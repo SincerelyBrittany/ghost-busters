@@ -49,7 +49,7 @@ export default class GameScene extends Phaser.Scene{
                 this.block.body.velocity.y *= -1;
             }
             //ghost sizer
-            let randSize = (velX + velY) * .003;
+            let randSize = (velX + velY) * .0035;
             console.log('Speed: ' + (velX+velY));
             console.log('Scale: ' + randSize);
             ghost.setScale(randSize);
