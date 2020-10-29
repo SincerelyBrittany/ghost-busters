@@ -156,7 +156,7 @@ Shivay:
 [issues-shield]: https://img.shields.io/github/issues/SincerelyBrittany/ghost-busters.svg?style=flat-square
 [issues-url]: https://github.com/SincerelyBrittany/ghost-busters/issues
 [license-shield]: https://img.shields.io/github/license/SincerelyBrittany/ghost-busters.svg?style=flat-square
-[license-url]: https://github.com/SincerelyBrittany/ghost-busters/blob/master/LICENSE.txt
+[license-url]: https://github.com/SincerelyBrittany/ghost-busters/blob/readme/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [dev-to-shield]:https://img.shields.io/badge/-Dev.to-black.svg?style=flat-square&logo=dev.to&colorB=555
 [product-screenshot]: https://github.com/SincerelyBrittany/ghost-busters/blob/readme/public/sample-gif.gif
