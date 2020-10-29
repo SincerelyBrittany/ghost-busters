@@ -30,12 +30,10 @@ export default class GameScene extends Phaser.Scene{
         window.gameOver = false;
         let ghostSizes = [];
         
-        for (var i = 0; i < 3; i++){
+        for (var i = 0; i < 10; i++){
             this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
             var ghost = this.add.image(0, 0, 'ghost');
-            let randSize = Phaser.Math.Between(1,3);
-            ghost.setScale(randSize);
             ghostSizes.push(ghost.displayHeight);
             this.block = this.add.container(this.pos.x, this.pos.y, [candle, ghost])
             this.block.setSize(64,128);
@@ -43,7 +41,9 @@ export default class GameScene extends Phaser.Scene{
             ghost.visible = false;
 
             //velocity setter
-            this.block.body.setVelocity(Phaser.Math.Between(200, 300), Phaser.Math.Between(200, 300));
+            let velX = Phaser.Math.Between(100, 400);
+            let velY = Phaser.Math.Between(100, 400);
+            this.block.body.setVelocity(velX, velY);
             this.block.body.setBounce(1).setCollideWorldBounds(true);
             if (Math.random() > 0.5){
                 this.block.body.velocity.x *= -1;
@@ -51,11 +51,15 @@ export default class GameScene extends Phaser.Scene{
             else {
                 this.block.body.velocity.y *= -1;
             }
+            //ghost sizer
+            let randSize = (velX + velY) * .0035;
+            console.log('Speed: ' + (velX+velY));
+            console.log('Scale: ' + randSize);
+            ghost.setScale(randSize);
 
             //candle interactions
             this.block.setInteractive();
             this.block.on('clicked', this.clickHandler, this);
-            console.log("candle create");
         }
 
         let biggestGhost = ghostSizes[0];
