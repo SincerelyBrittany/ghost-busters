@@ -3,24 +3,49 @@ const http = require('http').createServer(server);
 const io = require('socket.io')(http);
 
 let players = [];
+var objects = {};
 const rooms = {};
-const state = {};
+
 io.on('connection', function (socket) {
     console.log('A user connected: ' + socket.id);
 
-    players.push(socket.id);
+    socket.on('sprites', (sprites) => {
+        Object.keys(sprites).forEach(key => {
+            var sprite = sprites[key];
+            // console.log(`${key} was clicked: ${sprite['clicked']}`);
+            objects[key] = sprite;
+        })
+        socket.emit('updateCandles', objects);
+    })
+    
+    socket.on('clicked', (key) => {
+        objects[key]['clicked'] = true;
+        socket.broadcast.emit('updateCandles', objects);
+    });
 
-    socket.on('disconnect', function () {
-        console.log('A user disconnected: ' + socket.id);
-        players = players.filter(player => player !== socket.id);
+    socket.on('updateObj', (isOwner, key, x, y) => {
+        if (!isOwner) {
+            objects[key]['currentX'] = x;
+            objects[key]['currentY'] = y;
+            // objects[key]['xVel'] = xVel;
+            // objects[key]['yVel'] = yVel;
+            socket.emit('objUpdated', isOwner, objects[key], key)
+        }
     });
 
     socket.on('newGame', () => {
         var roomName = makeId(5);
-        console.log(roomName);
+        console.log(`user ${socket.id} created room ${roomName}`);
         rooms[socket.id] = roomName;
         socket.join(roomName);
+        const room = io.sockets.adapter.rooms[roomName];
         socket.emit('newGame', roomName);
+        let usersInRoom = Object.keys(room.sockets);
+        if (usersInRoom[0] === socket.id) {
+            console.log('newGame owner');
+            // WHY ISN"T THIS WORKING
+            io.to(socket.id).emit('isOwner');
+        };
     });
 
     socket.on('joinGame', (roomName) => {
@@ -28,13 +53,33 @@ io.on('connection', function (socket) {
         if (room){
             rooms[socket.id] = roomName;
             socket.join(roomName);
-            console.log(room.sockets)
+            console.log(room.sockets);
             socket.emit('joinGame');
-            console.log(`new user ${socket.id} joined room ${socket.room}`);
+            console.log(`new user ${socket.id} joined room ${roomName}`);
+            socket.to(roomName).emit('newPlayer', socket.id);
+            // FOR SOME REASON THIS DOESN'T EMIT :()
+            socket.emit('getPlayers', getPlayers());
+            if (room.sockets[0] === socket.id) {
+                console.log('joinGame owner');
+                io.to(socket.id).emit('isOwner');
+            };
         } else {
             socket.emit('unknownCode');
         }
     });
+
+    function getPlayers() {
+        var players = [];
+        Object.keys(io.sockets.connected).forEach((socketID) => {
+            var player = io.sockets.connected[socketID].id;
+            
+            if(player) {
+                players.push(player);
+            }
+        });
+        console.log(players);
+        return players;
+    }
 
     function makeId(length) {
         var result           = '';
@@ -44,10 +89,12 @@ io.on('connection', function (socket) {
            result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
-     }
+    }
+    
+    socket.on('disconnect', function () {
+        console.log('A user disconnected: ' + socket.id);
+    });
 });
-
-
 
 http.listen(3000, function () {
     console.log('Server started!');
