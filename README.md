@@ -15,13 +15,13 @@
   <h3 align="center">Ghost Busters</h3>
 
   <p align="center">
-    This is the second project/sprint built for the MLH Explorer Fellowship, built by <a href="https://github.com/shivaylamba"> Shivay Lamba </a> , <a href="https://github.com/ohitsremi">Remi Srijunyanont </a>, and <a href="https://github.com/SincerelyBrittany"> Brittany </a>, and <a href="https://github.com/n-mathis"> Nana </a>. The goal for this sprint was to create a Game using any framwork that we wanted. With this in mind, and given the time of the year, we came up with a Halloween game idea. The objective is for a player to catch as many ghost, which are underneath a candle, as fast as they can before the timer runs out. This application was built in a two week span. 
+    This is the second project/sprint built for the MLH Explorer Fellowship, built by <a href="https://github.com/shivaylamba"> Shivay Lamba </a> , <a href="https://github.com/ohitsremi">Remi Srijunyanont </a>,<a href="https://github.com/SincerelyBrittany"> Brittany </a>, and <a href="https://github.com/n-mathis">Nana </a>. The goal for this sprint was to create a Game using any framwork that we wanted. With this in mind, and given the time of the year, we came up with a Halloween game idea. The objective is for a player to catch as many ghost, which are underneath a candle, as fast as they can before the timer runs out. This application was built in a two week span. 
     <br />
     <a href="https://github.com/SincerelyBrittany/ghost-busters"><strong>Explore the docs »</strong></a>
     <br />
     <!-- <br />
     <a href="https://github.com/SincerelyBrittany/ghost-busters">View Demo</a> -->
-    ·
+    <!-- · -->
     <a href="https://github.com/SincerelyBrittany/ghost-busters/issues">Report Bug</a>
     ·
     <a href="https://github.com/SincerelyBrittany/ghost-busters/issues">Request Feature</a>
@@ -38,7 +38,7 @@
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
-* [Usage](#usage)
+<!-- * [Usage](#usage) -->
 * [Roadmap](#roadmap)
 * [Contributing](#contributing)
 * [License](#license)
@@ -63,11 +63,11 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 
-To get the projec up and running locally on your computer please follow the installation guide below. 
+To get the project up and running locally on your computer please follow the installation guide below. 
 
 ### Prerequisites
+You will need <a href="https://www.npmjs.com/package/npm-latest">npm</a> to get this application running. 
 
-This is an example of how to list things you need to use the software and how to install them.
 * npm
 ```sh
 npm install npm@latest -g
@@ -108,8 +108,6 @@ Contributions are what make the open source community such an amazing place to b
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-
 
 <!-- LICENSE -->
 ## License
