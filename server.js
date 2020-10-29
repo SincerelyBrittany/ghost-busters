@@ -21,13 +21,23 @@ io.on('connection', function (socket) {
         // make sure the all the other client objects are updated as well
         socket.emit('updateCandles', objects);
     })
-
     // communicate that a object/sprite has beeen clicked
+    
     socket.on('clicked', (key) => {
         objects[key]['clicked'] = true;
         // tell other users that the specific sprite has been clicked
         socket.broadcast.emit('updateCandles', objects);
     });
+
+    // socket.on('updateObj', (isOwner, key, x, y) => {
+    //     if (!isOwner) {
+    //         objects[key]['currentX'] = x;
+    //         objects[key]['currentY'] = y;
+    //         // objects[key]['xVel'] = xVel;
+    //         // objects[key]['yVel'] = yVel;
+    //         socket.emit('objUpdated', isOwner, objects[key], key)
+    //     }
+    // });
 
     socket.on('newGame', () => {
         var roomName = makeId(5);
@@ -36,6 +46,12 @@ io.on('connection', function (socket) {
         socket.join(roomName);
         const room = io.sockets.adapter.rooms[roomName];
         socket.emit('newGame', roomName);
+        let usersInRoom = Object.keys(room.sockets);
+        if (usersInRoom[0] === socket.id) {
+            console.log('newGame owner');
+            // WHY ISN"T THIS WORKING
+            io.to(socket.id).emit('isOwner');
+        };
     });
 
     socket.on('joinGame', (roomName) => {
@@ -49,6 +65,10 @@ io.on('connection', function (socket) {
             socket.to(roomName).emit('newPlayer', socket.id);
             // FOR SOME REASON THIS DOESN'T EMIT :()
             socket.emit('getPlayers', getPlayers());
+            // if (room.sockets[0] === socket.id) {
+            //     console.log('joinGame owner');
+            //     io.to(socket.id).emit('isOwner');
+            // };
         } else {
             socket.emit('unknownCode');
         }
@@ -83,8 +103,6 @@ io.on('connection', function (socket) {
     });
 
 });
-
-
 
 http.listen(3000, function () {
     console.log('Server started!');

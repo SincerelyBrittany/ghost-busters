@@ -12,7 +12,8 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 
     init(data) {
         this.socket = data.socket;
-        this.gameCode = data.gameCode;
+        this.gameCode = data.gameCode; 
+        this.otherPlayers = data.otherPlayers;
     }
 
 	preload(){
@@ -22,6 +23,11 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
     }
 
 	create() {
+        this.isOwner = false;
+        this.socket.on('isOwner', () => {
+            this.isOwner = true;
+        });
+
 		//Boundaries
         this.physics.world.setBoundsCollision(true, true, true, true);
         //Manual Boundaries
@@ -45,15 +51,23 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             ghost.visible = false;
             this.block.setData('key', i);
 
+            let xVel = Phaser.Math.Between(200, 300);
+            let yVel = Phaser.Math.Between(200, 300);
+
             sprites[i] = {
                 clicked: false,
+                initPos: this.pos,
+                currentX: this.block.x,
+                currentY: this.block.y,
+                // xVel: xVel,
+                // yVel: yVel,
                 container: this.block,
                 candle: this.block.list[0],
                 ghost: this.block.list[1]
             };
 
             //velocity setter
-            this.block.body.setVelocity(Phaser.Math.Between(200, 300), Phaser.Math.Between(200, 300));
+            this.block.body.setVelocity(xVel, yVel);
             this.block.body.setBounce(1).setCollideWorldBounds(true);
             if (Math.random() > 0.5){
                 this.block.body.velocity.x *= -1;
@@ -61,7 +75,6 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             else {
                 this.block.body.velocity.y *= -1;
             }
-
             //candle interactions
             this.block.setInteractive();
             this.block.on('clicked', this.clickHandler, this);
@@ -78,9 +91,32 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.input.on('gameobjectup', function (pointer, gameObject){
             gameObject.emit('clicked', gameObject.getData('key'));
         }, this);
-        
-        // update sprites if they're clicked
+
+        // update sprites
         this.socket.emit('sprites', sprites);
+        
+        // PLAYERS ARE ADDED IN LOBBY
+        // // DOESN'T GET TRIGGERED???? WHYYYYY
+        // this.socket.on('getPlayers', (players) => {
+        //     // console.log(players)
+        //     for (var i = 0; i < players.length; i++) {
+        //         if (players[i] !== this.socket.id) {
+        //             this.addPlayer(players[i]);
+        //         }
+        //     }
+        // })
+        // this.socket.on('newPlayer', (id) => {
+        //     this.addPlayer(id);
+        // })
+        if (!this.isOwner) {
+            this.socket.on('objUpdated', (isOwner, object, key) => {
+                if (!isOwner) {
+                    sprites[key]['container'].setX(object['currentX']);
+                    sprites[key]['container'].setY(object['currentY']);
+                    // sprites[key]['container'].body.setVelocity(object['xVel'],object['yVel']);
+                    }
+                })
+        }
 
         //time for game
         this.initialTime = 30;
@@ -88,6 +124,11 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         this.add.text(600,32, `Room Code: ${this.gameCode}`)
     }
+
+    // addPlayer(id) {
+    //     this.otherPlayers.push(id);
+    //     console.log(`you are player ${this.socket.id} and other players are ${this.otherPlayers}`)
+    // }
 
     formatTime(seconds){
         var minutes = Math.floor(seconds/60);
@@ -99,6 +140,18 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 
     //Do Game Over in here!
     update() {
+        // if (!this.isOwner) {
+        //     Object.keys(sprites).forEach((key) => {
+        //         let currPos = [sprites[key]['container'].x, sprites[key]['container'].x];
+        //         let prevPos = [sprites[key]['currentX'], sprites[key]['currentY']];
+        //         // let prevVel = [sprites[key]['xVel'], sprites[key]['yVel']];
+        //         // let currVel = [sprites[key]['container'].body.velocity.x, sprites[key]['container'].body.velocity.y];
+        //         if (currPos !== prevPos) {
+        //             //  || prevVel !== currVel
+        //             this.socket.emit('updateObj', this.isOwner, key, currPos[0], currPos[1]);
+        //         }
+        //     });
+        // }
         // make sure to continously update whether a candle was clicked on the server
         this.socket.on('updateCandles', (candles) => {
             Object.keys(candles).forEach(key => {
