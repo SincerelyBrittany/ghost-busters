@@ -38,36 +38,33 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         window.gameOver = false;
 
         let ghostSizes = [];
-        for (var i = 0; i < 3; i++){
+        for (var i = 0; i < 10; i++){
             this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
             var ghost = this.add.image(0, 0, 'ghost');
-            let randSize = Phaser.Math.Between(1,3);
-            ghost.setScale(randSize);
-            ghostSizes.push(ghost.displayHeight);
             this.block = this.add.container(this.pos.x, this.pos.y, [candle, ghost])
             this.block.setSize(64,128);
             this.physics.world.enable(this.block);
             ghost.visible = false;
             this.block.setData('key', i);
 
-            let xVel = Phaser.Math.Between(200, 300);
-            let yVel = Phaser.Math.Between(200, 300);
+            let velX = Phaser.Math.Between(200, 300);
+            let velY = Phaser.Math.Between(200, 300);
 
             sprites[i] = {
                 clicked: false,
                 initPos: this.pos,
                 currentX: this.block.x,
                 currentY: this.block.y,
-                // xVel: xVel,
-                // yVel: yVel,
+                // velX: velX,
+                // velY: velY,
                 container: this.block,
                 candle: this.block.list[0],
                 ghost: this.block.list[1]
             };
 
             //velocity setter
-            this.block.body.setVelocity(xVel, yVel);
+            this.block.body.setVelocity(velX, velY);
             this.block.body.setBounce(1).setCollideWorldBounds(true);
             if (Math.random() > 0.5){
                 this.block.body.velocity.x *= -1;
@@ -75,6 +72,17 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             else {
                 this.block.body.velocity.y *= -1;
             }
+
+            velX = this.block.body.velocity.x;
+            velY = this.block.body.velocity.y;
+
+            //ghost sizer
+            let randSize = (velX + velY) * .0035;
+            console.log('Speed: ' + (velX+velY));
+            console.log('Scale: ' + randSize);
+            ghost.setScale(randSize);
+            ghostSizes.push(ghost.displayHeight);
+
             //candle interactions
             this.block.setInteractive();
             this.block.on('clicked', this.clickHandler, this);
@@ -113,7 +121,7 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
                 if (!isOwner) {
                     sprites[key]['container'].setX(object['currentX']);
                     sprites[key]['container'].setY(object['currentY']);
-                    // sprites[key]['container'].body.setVelocity(object['xVel'],object['yVel']);
+                    // sprites[key]['container'].body.setVelocity(object['velX'],object['velY']);
                     }
                 })
         }
@@ -144,7 +152,7 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         //     Object.keys(sprites).forEach((key) => {
         //         let currPos = [sprites[key]['container'].x, sprites[key]['container'].x];
         //         let prevPos = [sprites[key]['currentX'], sprites[key]['currentY']];
-        //         // let prevVel = [sprites[key]['xVel'], sprites[key]['yVel']];
+        //         // let prevVel = [sprites[key]['velX'], sprites[key]['velY']];
         //         // let currVel = [sprites[key]['container'].body.velocity.x, sprites[key]['container'].body.velocity.y];
         //         if (currPos !== prevPos) {
         //             //  || prevVel !== currVel

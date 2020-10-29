@@ -33,8 +33,8 @@ io.on('connection', function (socket) {
     //     if (!isOwner) {
     //         objects[key]['currentX'] = x;
     //         objects[key]['currentY'] = y;
-    //         // objects[key]['xVel'] = xVel;
-    //         // objects[key]['yVel'] = yVel;
+    //         // objects[key]['velX'] = velX;
+    //         // objects[key]['velY'] = velY;
     //         socket.emit('objUpdated', isOwner, objects[key], key)
     //     }
     // });

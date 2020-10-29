@@ -59,7 +59,7 @@ export default class MultiPlayerLobbyScene extends Phaser.Scene {
             // Object.keys(sprites).forEach((key) => {
                 // let currPos = [sprites[key]['container'].x, sprites[key]['container'].x];
                 // let prevPos = [sprites[key]['currentX'], sprites[key]['currentY']];
-                // // let prevVel = [sprites[key]['xVel'], sprites[key]['yVel']];
+                // // let prevVel = [sprites[key]['velX'], sprites[key]['velY']];
                 // // let currVel = [sprites[key]['container'].body.velocity.x, sprites[key]['container'].body.velocity.y];
                 // if (currPos !== prevPos) {
                 //     //  || prevVel !== currVel

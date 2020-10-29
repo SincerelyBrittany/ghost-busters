@@ -34,7 +34,6 @@ export default class GameScene extends Phaser.Scene{
             this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
             var ghost = this.add.image(0, 0, 'ghost');
-            ghostSizes.push(ghost.displayHeight);
             this.block = this.add.container(this.pos.x, this.pos.y, [candle, ghost])
             this.block.setSize(64,128);
             this.physics.world.enable(this.block);
@@ -56,6 +55,7 @@ export default class GameScene extends Phaser.Scene{
             console.log('Speed: ' + (velX+velY));
             console.log('Scale: ' + randSize);
             ghost.setScale(randSize);
+            ghostSizes.push(ghost.displayHeight);
 
             //candle interactions
             this.block.setInteractive();
