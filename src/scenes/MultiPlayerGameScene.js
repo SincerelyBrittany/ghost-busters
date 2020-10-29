@@ -1,9 +1,6 @@
 import "phaser";
-import logoImg from "../assets/logo.png";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
-
-var sprites = {};
 
 export default class MultiPlayerGameScene extends Phaser.Scene {
 	constructor() {
@@ -12,21 +9,21 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 
     init(data) {
         this.socket = data.socket;
+        this.isOwner = data.isOwner;
         this.gameCode = data.gameCode; 
         this.otherPlayers = data.otherPlayers;
+        this.sprites = data.sprites;
+        this.biggestGhost = data.biggestGhost;
+        this.timer = data.time;
     }
 
 	preload(){
-        this.load.image("logo", logoImg);
         this.load.image("candle", candleImg);
         this.load.image('ghost', ghostImg);
     }
 
 	create() {
-        this.isOwner = false;
-        this.socket.on('isOwner', () => {
-            this.isOwner = true;
-        });
+        // console.log(this.isOwner);
 
 		//Boundaries
         this.physics.world.setBoundsCollision(true, true, true, true);
@@ -36,91 +33,74 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(this.physics.world.bounds), -100, -100);
         
         window.gameOver = false;
+        this.displayedOver = false;
 
-        let ghostSizes = [];
         for (var i = 0; i < 3; i++){
-            this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
+            candle.setVisible(this.sprites[i]['candleVis'])
             var ghost = this.add.image(0, 0, 'ghost');
-            let randSize = Phaser.Math.Between(1,3);
-            ghost.setScale(randSize);
-            ghostSizes.push(ghost.displayHeight);
-            this.block = this.add.container(this.pos.x, this.pos.y, [candle, ghost])
+            ghost.setScale(this.sprites[i]['ghostScale']);
+            if (this.sprites[i]['ghostScale'] === this.biggestGhost) {
+                this.biggestGhost = ghost.displayHeight;
+            }
+            ghost.setVisible(this.sprites['ghostVis']);
+
+            this.block = this.add.container(this.sprites[i]['initPos'].x, this.sprites[i]['initPos'].y, [candle, ghost])
             this.block.setSize(64,128);
             this.physics.world.enable(this.block);
-            ghost.visible = false;
             this.block.setData('key', i);
 
-            let xVel = Phaser.Math.Between(200, 300);
-            let yVel = Phaser.Math.Between(200, 300);
+            let xVel = this.sprites['xVel']
+            let yVel = this.sprites['yVel']
 
-            sprites[i] = {
-                clicked: false,
-                initPos: this.pos,
-                currentX: this.block.x,
-                currentY: this.block.y,
-                // xVel: xVel,
-                // yVel: yVel,
-                container: this.block,
-                candle: this.block.list[0],
-                ghost: this.block.list[1]
-            };
+            this.sprites[i]['container'] = this.block;
+            this.sprites[i]['candle'] = this.block.list[0];
+            this.sprites[i]['ghost'] = this.block.list[1];
+            //     key: i,
+            //     candleClicked: false,
+            //     initPos: this.pos,
+            //     currentX: this.block.x,
+            //     currentY: this.block.y,
+            //     xVel: xVel,
+            //     yVel: yVel,
+            //     candleVis: true,
+            //     ghostScale: randSize,
+            //     ghostVis: false,
 
             //velocity setter
-            this.block.body.setVelocity(xVel, yVel);
-            this.block.body.setBounce(1).setCollideWorldBounds(true);
-            if (Math.random() > 0.5){
-                this.block.body.velocity.x *= -1;
-            }
-            else {
-                this.block.body.velocity.y *= -1;
-            }
+            this.sprites[i]['container'].body.setVelocity(xVel, yVel);
+            this.sprites[i]['container'].body.setBounce(1).setCollideWorldBounds(true);
+            // if (Math.random() > 0.5){
+            //     this.block.body.velocity.x *= -1;
+            // }
+            // else {
+            //     this.block.body.velocity.y *= -1;
+            // }
             //candle interactions
-            this.block.setInteractive();
-            this.block.on('clicked', this.clickHandler, this);
+            this.sprites[i]['container'].setInteractive();
+            this.sprites[i]['container'].on('clicked', this.clickHandler, this);
         }
 
-        let biggestGhost = ghostSizes[0];
-        ghostSizes.forEach((ghost) => {
-            if (ghost > biggestGhost) {
-                biggestGhost = ghost;
-            }
-        })
-        window.biggestGhost = biggestGhost;
         //If candle is clicked on, the event is fired. It will emit 'clicked' event.
         this.input.on('gameobjectup', function (pointer, gameObject){
             gameObject.emit('clicked', gameObject.getData('key'));
         }, this);
 
         // update sprites
-        this.socket.emit('sprites', sprites);
+        this.socket.emit('sprites', this.sprites);
         
-        // PLAYERS ARE ADDED IN LOBBY
-        // // DOESN'T GET TRIGGERED???? WHYYYYY
-        // this.socket.on('getPlayers', (players) => {
-        //     // console.log(players)
-        //     for (var i = 0; i < players.length; i++) {
-        //         if (players[i] !== this.socket.id) {
-        //             this.addPlayer(players[i]);
-        //         }
-        //     }
-        // })
-        // this.socket.on('newPlayer', (id) => {
-        //     this.addPlayer(id);
-        // })
         if (!this.isOwner) {
             this.socket.on('objUpdated', (isOwner, object, key) => {
                 if (!isOwner) {
-                    sprites[key]['container'].setX(object['currentX']);
-                    sprites[key]['container'].setY(object['currentY']);
-                    // sprites[key]['container'].body.setVelocity(object['xVel'],object['yVel']);
+                    this.sprites[key]['container'].setX(object['currentX']);
+                    this.sprites[key]['container'].setY(object['currentY']);
+                    // this.sprites[key]['container'].body.setVelocity(object['xVel'],object['yVel']);
                     }
                 })
         }
 
         //time for game
-        this.initialTime = 30;
-        this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
+        this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.timer));
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         this.add.text(600,32, `Room Code: ${this.gameCode}`)
     }
@@ -140,12 +120,13 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 
     //Do Game Over in here!
     update() {
+        // if the player isn't the owner, then it is suppose to update positions of sprites
         // if (!this.isOwner) {
-        //     Object.keys(sprites).forEach((key) => {
-        //         let currPos = [sprites[key]['container'].x, sprites[key]['container'].x];
-        //         let prevPos = [sprites[key]['currentX'], sprites[key]['currentY']];
-        //         // let prevVel = [sprites[key]['xVel'], sprites[key]['yVel']];
-        //         // let currVel = [sprites[key]['container'].body.velocity.x, sprites[key]['container'].body.velocity.y];
+        //     Object.keys(this.sprites).forEach((key) => {
+        //         let currPos = [this.sprites[key]['container'].x, this.sprites[key]['container'].x];
+        //         let prevPos = [this.sprites[key]['currentX'], this.sprites[key]['currentY']];
+        //         // let prevVel = [this.sprites[key]['xVel'], this.sprites[key]['yVel']];
+        //         // let currVel = [this.sprites[key]['container'].body.velocity.x, this.sprites[key]['container'].body.velocity.y];
         //         if (currPos !== prevPos) {
         //             //  || prevVel !== currVel
         //             this.socket.emit('updateObj', this.isOwner, key, currPos[0], currPos[1]);
@@ -156,41 +137,45 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.socket.on('updateCandles', (candles) => {
             Object.keys(candles).forEach(key => {
                 if (candles[key]['clicked']) {
-                    sprites[key]['container'].off("clicked", this.clickHandler);
-                    sprites[key]['container'].input.enabled = false;
-                    sprites[key]['candle'].setVisible(false);
-                    sprites[key]['ghost'].setVisible(true);
-                    sprites[key]['container'].body.setVelocity(0);
-                    if (sprites[key]['ghost'].displayHeight >= window.biggestGhost) {
+                    this.sprites[key]['container'].off("clicked", this.clickHandler);
+                    this.sprites[key]['container'].input.enabled = false;
+                    this.sprites[key]['candle'].setVisible(false);
+                    this.sprites[key]['ghost'].setVisible(true);
+                    this.sprites[key]['container'].body.setVelocity(0);
+                    if (this.sprites[key]['ghost'].displayHeight >= this.biggestGhost) {
                         window.gameOver = true;
                     }
                 }
             });
         });
 
-        if (this.initialTime <= 0 || window.gameOver){
+        // displayedOver is suppose to prevent from adding text on top of it every time it loops
+        if ((this.timer <= 0 || window.gameOver) && !this.displayedOver){
             //Modify to show score? and hide sprites
-            this.text.setText(`Game Over. You have a score of ${this.initialTime}`);
+            this.text.destroy();
+            this.add.text(32,32, `Game Over. You have a score of`);
+            this.displayedOver = true;
         }
     }
 
     clickHandler(key){
-        sprites[key]['container'].off("clicked", this.clickHandler);
-        sprites[key]['container'].input.enabled = false;
-        sprites[key]['candle'].setVisible(false);
-        sprites[key]['ghost'].setVisible(true);
-        sprites[key]['container'].body.setVelocity(0);
-        if (sprites[key]['ghost'].displayHeight >= window.biggestGhost) {
+        this.sprites[key]['container'].off("clicked", this.clickHandler);
+        this.sprites[key]['container'].input.enabled = false;
+        this.sprites[key]['candle'].setVisible(false);
+        this.sprites[key]['ghost'].setVisible(true);
+        this.sprites[key]['container'].body.setVelocity(0);
+        if (this.sprites[key]['ghost'].displayHeight >= this.biggestGhost) {
             window.gameOver = true;
         }
         this.socket.emit("clicked", key);
     }
 
     onEvent () {
-        this.initialTime -= 1;
-        this.text.setText('Time Remaining: ' + this.formatTime(this.initialTime));
-        if (this.initialTime <= 0 || window.gameOver){
+        this.timer -= 1;
+        this.text.setText('Time Remaining: ' + this.formatTime(this.timer));
+        if (this.timer <= 0 || window.gameOver){
             this.timedEvent.remove(false);
+            this.text.destroy();
         }
     }
 }

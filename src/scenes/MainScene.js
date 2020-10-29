@@ -1,5 +1,5 @@
 import "phaser";
-import ghostImg from "../assets/ghost.png";
+// import ghostImg from "../assets/ghost.png";
 
 export default class SceneMain extends Phaser.Scene {
 	constructor() {
@@ -10,7 +10,7 @@ export default class SceneMain extends Phaser.Scene {
     }
 
 	create() {
-		this.load.image("ghost", ghostImg);
+		// this.load.image("ghost", ghostImg);
 	}
 
 	singlePlayerButton() {
@@ -22,7 +22,6 @@ export default class SceneMain extends Phaser.Scene {
 	}
 
 	create() {
-		const candle = this.add.image(500, 150, "candle");
 		var singlePlayer = this.add.text(100, 100, "Single Player Game");
 		singlePlayer.setInteractive({ useHandCursor: true });
 		singlePlayer.on("pointerdown", () => this.singlePlayerButton());

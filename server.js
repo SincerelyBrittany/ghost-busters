@@ -15,16 +15,16 @@ io.on('connection', function (socket) {
     socket.on('sprites', (sprites) => {
         Object.keys(sprites).forEach(key => {
             var sprite = sprites[key];
-            // console.log(`${key} was clicked: ${sprite['clicked']}`);
+            // console.log(`${key} candle was clicked: ${sprite['candleClicked']}`);
             objects[key] = sprite;
         })
         // make sure the all the other client objects are updated as well
         socket.emit('updateCandles', objects);
     })
-    // communicate that a object/sprite has beeen clicked
+    // communicate that a object/sprite has been clicked
     
-    socket.on('clicked', (key) => {
-        objects[key]['clicked'] = true;
+    socket.on('candleClicked', (key) => {
+        objects[key]['candleClicked'] = true;
         // tell other users that the specific sprite has been clicked
         socket.broadcast.emit('updateCandles', objects);
     });
@@ -45,13 +45,17 @@ io.on('connection', function (socket) {
         rooms[socket.id] = roomName;
         socket.join(roomName);
         const room = io.sockets.adapter.rooms[roomName];
-        socket.emit('newGame', roomName);
-        let usersInRoom = Object.keys(room.sockets);
-        if (usersInRoom[0] === socket.id) {
+        let users = Object.keys(room.sockets);
+        // if this socket was the first person in the room,
+        // they must have created the room and therefore are the owner/controller
+        if (users[0] === socket.id) {
             console.log('newGame owner');
-            // WHY ISN"T THIS WORKING
-            io.to(socket.id).emit('isOwner');
+            socket.on('hello', msg => {
+                // for some reason this line won't emit unless i have this 'hello' socket on
+                io.to(socket.id).emit('isOwner');
+            });
         };
+        socket.emit('newGame', roomName);
     });
 
     socket.on('joinGame', (roomName) => {
@@ -63,16 +67,26 @@ io.on('connection', function (socket) {
             socket.emit('joinGame');
             console.log(`new user ${socket.id} joined room ${roomName}`);
             socket.to(roomName).emit('newPlayer', socket.id);
-            // FOR SOME REASON THIS DOESN'T EMIT :()
+            // FOR SOME REASON THIS DOESN'T EMIT :( sometimes it does???
             socket.emit('getPlayers', getPlayers());
-            // if (room.sockets[0] === socket.id) {
-            //     console.log('joinGame owner');
-            //     io.to(socket.id).emit('isOwner');
+            // if this socket was the first person in the room,
+            // they must have created the room and therefore are the owner/controller
+            // if (rooms.sockets[0] === socket.id) {
+            //     console.log('newGame owner');
+            //     socket.on('hello', () => {
+            //         // for some reason this line won't emit unless i have this 'hello' socket on
+            //         io.to(socket.id).emit('isOwner');
+            //     });
             // };
         } else {
             socket.emit('unknownCode');
         }
     });
+
+    socket.on('startGame', (sprites, biggestGhost, time) => {
+        objects = sprites;
+        socket.emit('startGame', objects, biggestGhost, time);
+    })
 
     function getPlayers() {
         var players = [];
