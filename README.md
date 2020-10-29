@@ -164,10 +164,11 @@ Shivay:
 [brittany-dev-to-url]: https://dev.to/sincerelybrittany
 
 <!-- Remi Social Media  -->
-[remi-linkedin-url]: https://www.linkedin.com/in/username/
+[remi-linkedin-url]: https://www.linkedin.com/in/remi-srijunyanont/
 [remi-twitter-shield]:https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fusername
 [remi-twitter-url]: https://twitter.com/usernmae
-[remi-github-shield]: https://img.shields.io/github/followers/username?label=Follow%20on%20Github&style=social
+[remi-github-shield]: https://img.shields.io/github/followers/ohitsremi?label=Follow%20on%20Github&style=social
+[remi-github-url]: https://github.com/ohitsremi
 [remi-dev-to-url]: https://dev.to/username
 
 <!-- Nana Social Media  -->
