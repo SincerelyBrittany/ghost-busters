@@ -15,7 +15,7 @@
   <h3 align="center">Ghost Busters</h3>
 
   <p align="center">
-    This is the second project/sprint built for the MLH Explorer Fellowship, built by <a href="https://github.com/shivaylamba"> Shivay Lamba </a> , <a href="https://github.com/ohitsremi">Remi Srijunyanont </a>,<a href="https://github.com/SincerelyBrittany"> Brittany </a>, and <a href="https://github.com/n-mathis">Nana </a>. The goal for this sprint was to create a Game using any framwork that we wanted. With this in mind, and given the time of the year, we came up with a Halloween game idea. The objective is for a player to catch as many ghost, which are underneath a candle, as fast as they can before the timer runs out. This application was built in a two week span. 
+    This is the second project/sprint built for the MLH Explorer Fellowship, built by <a href="https://github.com/shivaylamba"> Shivay Lamba </a> , <a href="https://github.com/ohitsremi">Remi Srijunyanont </a>,<a href="https://github.com/SincerelyBrittany"> Brittany </a>, and <a href="https://github.com/n-mathis">NaNa </a>. The goal for this sprint was to create a Game using any framwork that we wanted. With this in mind, and given the time of the year, we came up with a Halloween game idea. The objective is for a player to catch as many ghost, which are underneath a candle, as fast as they can before the timer runs out. This application was built in a two week span. 
     <br />
     <a href="https://github.com/SincerelyBrittany/ghost-busters"><strong>Explore the docs »</strong></a>
     <br />
@@ -130,7 +130,11 @@ Remi:
 [![Linkedin][linkedin-shield]][remi-linkedin-url]
 [![Github.com][remi-github-shield]][remi-github-url]
 
-Nana:
+NaNa:
+[![Twitter][nana-twitter-shield]][nana-twitter-url]
+[![Linkedin][linkedin-shield]][nana-linkedin-url]
+[![Dev.to][dev-to-shield]][nana-dev-to-url]
+[![Github.com][nana-github-shield]][nana-github-url]
 
 Shivay: 
 
@@ -170,12 +174,12 @@ Shivay:
 [remi-github-shield]: https://img.shields.io/github/followers/ohitsremi?label=Follow%20on%20Github&style=social
 [remi-github-url]: https://github.com/ohitsremi
 
-<!-- Nana Social Media  -->
-[nana-linkedin-url]: https://www.linkedin.com/in/username/
-[nana-twitter-shield]:https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fusername
-[nana-twitter-url]: https://twitter.com/usernmae
-[nana-github-shield]: https://img.shields.io/github/followers/username?label=Follow%20on%20Github&style=social
-[nana-dev-to-url]: https://dev.to/username
+<!-- NaNa Social Media  -->
+[nana-linkedin-url]: https://www.linkedin.com/in/nana-m-645737aa/
+[nana-twitter-shield]:https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2Fnana_this
+[nana-twitter-url]: https://twitter.com/nana_this
+[nana-github-shield]: https://img.shields.io/github/followers/n-mathis?label=Follow%20on%20Github&style=social
+[nana-dev-to-url]: https://dev.to/nmathis
 
 <!-- Shivay Social Media  -->
 [shivay-linkedin-url]: https://www.linkedin.com/in/username/
