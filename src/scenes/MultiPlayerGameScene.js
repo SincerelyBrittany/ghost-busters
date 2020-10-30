@@ -2,6 +2,7 @@ import "phaser";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
 
+
 var sprites = {};
 
 export default class MultiPlayerGameScene extends Phaser.Scene {
@@ -21,22 +22,23 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
     }
 
 	create() {
+        this.score = 0;
         this.isOwner = false;
         this.socket.on('isOwner', () => {
             this.isOwner = true;
         });
+
         this.initialTime;
+        const screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2;
+        const screenCenterY = this.cameras.main.worldView.y + this.cameras.main.height / 2;
 		//Boundaries
         this.physics.world.setBoundsCollision(true, true, true, true);
         //Manual Boundaries
         //this.physics.world.setBounds(0, 0, 800, 600);
-
         this.spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(this.physics.world.bounds), -100, -100);
-        
-        window.gameOver = false;
-
-        let ghostSizes = [];
-        for (var i = 0; i < 2; i++){
+    
+        // var ghostSizes = [];
+        for (var i = 0; i < 10; i++){
             this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
             var ghost = this.add.image(0, 0, 'ghost');
@@ -54,8 +56,6 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
                 initPos: this.pos,
                 currentX: this.block.x,
                 currentY: this.block.y,
-                // velX: velX,
-                // velY: velY,
                 container: this.block,
                 candle: this.block.list[0],
                 ghost: this.block.list[1]
@@ -72,24 +72,26 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             }
 
             //ghost sizer
-            let randSize = (velX + velY) * .0035;
-            console.log('Speed: ' + (velX+velY));
-            console.log('Scale: ' + randSize);
-            ghost.setScale(randSize);
-            ghostSizes.push(ghost.displayHeight);
+            // let randSize = (velX + velY) * .0035;
+            // console.log('Speed: ' + (velX+velY));
+            // console.log('Scale: ' + randSize);
+            // ghost.setScale(randSize);
+            // ghostSizes.push(ghost.displayHeight);
 
             //candle interactions
             this.block.setInteractive();
             this.block.on('clicked', this.clickHandler, this);
         }
 
-        let biggestGhost = ghostSizes[0];
-        ghostSizes.forEach((ghost) => {
-            if (ghost > biggestGhost) {
-                biggestGhost = ghost;
-            }
-        })
-        window.biggestGhost = biggestGhost;
+        // No longer using the biggest ghost as a point system
+        // let biggestGhost = ghostSizes[0];
+        // ghostSizes.forEach((ghost) => {
+        //     if (ghost > biggestGhost) {
+        //         biggestGhost = ghost;
+        //     }
+        // })
+        // window.biggestGhost = biggestGhost;
+
         //If candle is clicked on, the event is fired. It will emit 'clicked' event.
         this.input.on('gameobjectup', function (pointer, gameObject){
             gameObject.emit('clicked', gameObject.getData('key'));
@@ -97,29 +99,7 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
 
         // update sprites
         this.socket.emit('sprites', sprites);
-        
-        // PLAYERS ARE ADDED IN LOBBY
-        // // DOESN'T GET TRIGGERED???? WHYYYYY
-        // this.socket.on('getPlayers', (players) => {
-        //     // console.log(players)
-        //     for (var i = 0; i < players.length; i++) {
-        //         if (players[i] !== this.socket.id) {
-        //             this.addPlayer(players[i]);
-        //         }
-        //     }
-        // })
-        // this.socket.on('newPlayer', (id) => {
-        //     this.addPlayer(id);
-        // })
-        if (!this.isOwner) {
-            this.socket.on('objUpdated', (isOwner, object, key) => {
-                if (!isOwner) {
-                    sprites[key]['container'].setX(object['currentX']);
-                    sprites[key]['container'].setY(object['currentY']);
-                    // sprites[key]['container'].body.setVelocity(object['velX'],object['velY']);
-                    }
-                })
-        }
+
         this.text = this.add.text(32,32, '' );
         this.roomCode = this.add.text(600,32, `Room Code: ${this.gameCode}`);
         //time for game
@@ -127,38 +107,45 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.socket.emit('decTime');
         this.socket.on('decTime', function(i){
              that.timers(i);
+        });
+
+        var gameMsg = this.add.text(screenCenterX, screenCenterY, '').setOrigin(0.5);
+        this.socket.on('isWinner', (winningId) => {
+            this.stopSprites();
+            if (winningId === this.socket.id) {
+                gameMsg.setText('YOU WON!!!');
+                gameMsg.setColor('#0000ff');
+                gameMsg.setFontSize(36);
+            } else {
+                gameMsg.setText('You lost! Try again :)');
+                gameMsg.setColor('#ff0000');
+                gameMsg.setFontSize(36);
+            }
+        });
+    }
+
+    stopSprites() {
+        Object.keys(sprites).forEach(key => {
+            sprites[key]['container'].body.setVelocity(0,0);
         })
     }
 
     timers (i) {
-        console.log("you are in timer", i);
         this.initialTime = i;
         this.text.setText('Time Remaining: ' + this.initialTime );
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
     }
 
     onEvent () {
-        console.log(this.initialTime, "this is initial time")
         this.text.setText('Time Remaining: ' + this.initialTime)
-        if (this.initialTime <= 0 || window.gameOver){
+        if (this.initialTime <= 0){
             this.timedEvent.remove(false);
         }
     }
 
     //Do Game Over in here!
     update() {
-        // if (!this.isOwner) {
-        //     Object.keys(sprites).forEach((key) => {
-        //         let currPos = [sprites[key]['container'].x, sprites[key]['container'].x];
-        //         let prevPos = [sprites[key]['currentX'], sprites[key]['currentY']];
-        //         // let prevVel = [sprites[key]['velX'], sprites[key]['velY']];
-        //         // let currVel = [sprites[key]['container'].body.velocity.x, sprites[key]['container'].body.velocity.y];
-        //         if (currPos !== prevPos) {
-        //             //  || prevVel !== currVel
-        //             this.socket.emit('updateObj', this.isOwner, key, currPos[0], currPos[1]);
-        //         }
-        //     });
-        // }
+
         // make sure to continously update whether a candle was clicked on the server
         this.socket.on('updateCandles', (candles) => {
             Object.keys(candles).forEach(key => {
@@ -168,28 +155,24 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
                     sprites[key]['candle'].setVisible(false);
                     sprites[key]['ghost'].setVisible(true);
                     sprites[key]['container'].body.setVelocity(0);
-                    if (sprites[key]['ghost'].displayHeight >= window.biggestGhost) {
-                        window.gameOver = true;
-                    }
                 }
             });
         });
 
-        if (this.initialTime <= 0 || window.gameOver){
+        if (this.initialTime <= 0){
             //Modify to show score? and hide sprites
-            this.text.setText(`Game Over. You have a score of ${this.initialTime}`);
+            this.socket.emit('gameOver', this.socket.id, this.score);
+            this.text.setText(`Game Over. You have a score of ${this.score}`);
         }
     }
 
     clickHandler(key){
+        this.score += 10;
         sprites[key]['container'].off("clicked", this.clickHandler);
         sprites[key]['container'].input.enabled = false;
         sprites[key]['candle'].setVisible(false);
         sprites[key]['ghost'].setVisible(true);
         sprites[key]['container'].body.setVelocity(0);
-        if (sprites[key]['ghost'].displayHeight >= window.biggestGhost) {
-            window.gameOver = true;
-        }
         this.socket.emit("clicked", key);
     }
 }

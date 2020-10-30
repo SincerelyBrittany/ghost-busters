@@ -5,14 +5,14 @@ const { promisify } = require('util');
 
 const sleep = promisify(setTimeout);
 
-let players = [];
+let players = {};
 var objects = {};
 const rooms = {};
 
 io.on('connection', function (socket) {
     console.log('A user connected: ' + socket.id);
 
-    players.push(socket.id);
+    players[socket.id] = {};
 
     // update the objects to have the client's state of the sprites
     socket.on('sprites', (sprites) => {
@@ -31,16 +31,6 @@ io.on('connection', function (socket) {
         // tell other users that the specific sprite has been clicked
         socket.broadcast.emit('updateCandles', objects);
     });
-        
-    // socket.on('updateObj', (isOwner, key, x, y) => {
-    //     if (!isOwner) {
-    //         objects[key]['currentX'] = x;
-    //         objects[key]['currentY'] = y;
-    //         // objects[key]['velX'] = velX;
-    //         // objects[key]['velY'] = velY;
-    //         socket.emit('objUpdated', isOwner, objects[key], key)
-    //     }
-    // });
 
     socket.on('newGame', () => {
         var roomName = makeId(5);
@@ -52,7 +42,6 @@ io.on('connection', function (socket) {
         // if this socket was the first person in the room,
         // they must have created the room and therefore are the owner/controller
         if (users[0] === socket.id) {
-            console.log('newGame owner');
             socket.on('hello', msg => {
                 // for some reason this line won't emit unless i have this 'hello' socket on
                 io.to(socket.id).emit('isOwner');
@@ -82,7 +71,7 @@ io.on('connection', function (socket) {
     });
 
     const decTime = async () => {
-        for (var i = 30; i > 0; i--){
+        for (var i = 30; i >= 0; i--){
             await sleep(1000);
             console.log(`time is: ${i}`);
             io.emit('decTime', (i));
@@ -97,6 +86,18 @@ io.on('connection', function (socket) {
         });
 
     })
+
+    socket.on('gameOver', (player, score) => {
+        players[player] = {score: score};
+        let bestScore = 0
+        let winner = ''
+        Object.keys(players).forEach((id) => {
+            if (players[id]['score'] >= bestScore) {
+                winner = id;
+            }
+        })
+        socket.emit('isWinner', winner);
+    });
 
     function getPlayers() {
         var players = [];
@@ -123,7 +124,6 @@ io.on('connection', function (socket) {
 
      socket.on('disconnect', function () {
         console.log('A user disconnected: ' + socket.id);
-        players = players.filter(player => player !== socket.id);
     });
 
 });

@@ -61,7 +61,7 @@ export default class MultiPlayerLobbyScene extends Phaser.Scene {
             this.add.text(32,((yPlacement*32)+64), id);
             this.otherPlayers[id]['added'] = true;
         }
-        console.log(`you are player ${this.socket.id} and other players are ${this.otherPlayers}`)
+        // console.log(`you are player ${this.socket.id} and other players are ${this.otherPlayers}`)
     }
 
     update() {
