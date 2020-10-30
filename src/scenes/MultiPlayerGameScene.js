@@ -122,19 +122,25 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         }
 
         //time for game
+        let that = this
         this.socket.emit('decTime');
-        this.initialTime = this.socket.on('decTime', (i) => {
-            console.log("this is dec time"); // check if socket
-            console.log(i);
-        });
-        console.log(this.initialTime);
+        this.socket.on('decTime', function(i){
+             that.timers(i)
+            // that.initialTime = i
+        })
+    }
+
+    timers (i) {
+        console.log("you are in timer", i)
+        this.initialTime = i
         this.text = this.add.text(32,32, 'Time Remaining: ' + this.initialTime );
-        // this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
+        this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         this.add.text(600,32, `Room Code: ${this.gameCode}`)
     }
 
     onEvent () {
-        this.text.setText('Time Remaining: ' + this.initialTime);
+        console.log(this.initialTime, "this is initial time")
+        this.text.setText('Time Remaining: ' + this.initialTime)
         if (this.initialTime <= 0 || window.gameOver){
             this.timedEvent.remove(false);
         }
