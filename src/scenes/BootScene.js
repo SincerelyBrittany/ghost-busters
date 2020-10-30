@@ -5,13 +5,16 @@ export default class SceneBoot extends Phaser.Scene {
     constructor() {
         super();
     }
+    init(data) {
+        this.socket = data.socket;
+    }
 
     preload() {
         this.load.image("candle", candleImg)
     }
 
     clickButton() {
-        this.scene.switch('Main');
+        this.scene.start('Main', { socket: this.socket });
     }
 
     create() {
@@ -19,7 +22,5 @@ export default class SceneBoot extends Phaser.Scene {
         var text = this.add.text(100,100, 'Press Here To Start');
         text.setInteractive({ useHandCursor: true });
         text.on('pointerdown', () => this.clickButton());
-
     }
 }
-

@@ -1,9 +1,7 @@
-import 'phaser';
+import "phaser";
 import logoImg from "../assets/logo.png";
-import candleImg from "../assets/candle.png";
 import ghostImg from "../assets/ghost.png";
-
-
+import candleImg from "../assets/candle.png";
 
 export default class GameScene extends Phaser.Scene{
     constructor() {
@@ -31,7 +29,6 @@ export default class GameScene extends Phaser.Scene{
             this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
             var ghost = this.add.image(0, 0, 'ghost');
-            ghostSizes.push(ghost.displayHeight);
             this.block = this.add.container(this.pos.x, this.pos.y, [candle, ghost])
             this.block.setSize(64,128);
             this.physics.world.enable(this.block);
@@ -53,6 +50,7 @@ export default class GameScene extends Phaser.Scene{
             console.log('Speed: ' + (velX+velY));
             console.log('Scale: ' + randSize);
             ghost.setScale(randSize);
+            ghostSizes.push(ghost.displayHeight);
 
             //candle interactions
             this.block.setInteractive();
@@ -75,9 +73,8 @@ export default class GameScene extends Phaser.Scene{
         //time for game
         this.initialTime = 30;
         this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
-        
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
-    }
+	}
 
     formatTime(seconds){
         var minutes = Math.floor(seconds/60);
