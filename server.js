@@ -1,6 +1,9 @@
 const server = require('express')();
 const http = require('http').createServer(server);
 const io = require('socket.io')(http);
+const { promisify } = require('util');
+
+const sleep = promisify(setTimeout);
 
 let players = [];
 var objects = {};
@@ -28,7 +31,7 @@ io.on('connection', function (socket) {
         // tell other users that the specific sprite has been clicked
         socket.broadcast.emit('updateCandles', objects);
     });
-
+        
     // socket.on('updateObj', (isOwner, key, x, y) => {
     //     if (!isOwner) {
     //         objects[key]['currentX'] = x;
@@ -78,9 +81,21 @@ io.on('connection', function (socket) {
         }
     });
 
+    const decTime = async () => {
+        for (var i = 30; i > 0; i--){
+            await sleep(1000);
+            console.log(`time is: ${i}`);
+            io.emit('decTime', (i));
+        }
+    }
+
     socket.on('startGame', () => {
         console.log('startGame');
         socket.broadcast.emit('startGame');
+        socket.on('decTime', () => {
+            decTime();
+        });
+
     })
 
     function getPlayers() {

@@ -25,7 +25,7 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.socket.on('isOwner', () => {
             this.isOwner = true;
         });
-
+        this.initialTime;
 		//Boundaries
         this.physics.world.setBoundsCollision(true, true, true, true);
         //Manual Boundaries
@@ -122,27 +122,23 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         }
 
         //time for game
-        this.initialTime = 30;
-        this.text = this.add.text(32,32, 'Time Remaining: ' + this.formatTime(this.initialTime));
-        this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
+        this.socket.emit('decTime');
+        this.initialTime = this.socket.on('decTime', (i) => {
+            console.log("this is dec time"); // check if socket
+            console.log(i);
+        });
+        console.log(this.initialTime);
+        this.text = this.add.text(32,32, 'Time Remaining: ' + this.initialTime );
+        // this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         this.add.text(600,32, `Room Code: ${this.gameCode}`)
     }
 
     onEvent () {
-        this.initialTime -= 1;
-        this.text.setText('Time Remaining: ' + this.formatTime(this.initialTime));
+        this.text.setText('Time Remaining: ' + this.initialTime);
         if (this.initialTime <= 0 || window.gameOver){
             this.timedEvent.remove(false);
         }
     }
-    
-    formatTime(seconds){
-        var minutes = Math.floor(seconds/60);
-        var partInSeconds = seconds%60;
-        partInSeconds = partInSeconds.toString().padStart(2,'0');
-        // Returns formated time
-        return `${minutes}:${partInSeconds}`;
-	}
 
     //Do Game Over in here!
     update() {
