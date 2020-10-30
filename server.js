@@ -71,7 +71,7 @@ io.on('connection', function (socket) {
     });
 
     const decTime = async () => {
-        for (var i = 30; i >= 0; i--){
+        for (var i = 15; i >= 0; i--){
             await sleep(1000);
             console.log(`time is: ${i}`);
             io.emit('decTime', (i));
@@ -93,6 +93,7 @@ io.on('connection', function (socket) {
         let winner = ''
         Object.keys(players).forEach((id) => {
             if (players[id]['score'] >= bestScore) {
+                bestScore = players[id]['score'];
                 winner = id;
             }
         })
