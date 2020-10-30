@@ -1,5 +1,4 @@
 import "phaser";
-import logoImg from "../assets/logo.png";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
 
@@ -17,7 +16,6 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
     }
 
 	preload(){
-        this.load.image("logo", logoImg);
         this.load.image("candle", candleImg);
         this.load.image('ghost', ghostImg);
     }
@@ -38,7 +36,7 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         window.gameOver = false;
 
         let ghostSizes = [];
-        for (var i = 0; i < 10; i++){
+        for (var i = 0; i < 2; i++){
             this.pos = Phaser.Geom.Rectangle.Random(this.spriteBounds);
             var candle = this.add.image(0,0, 'candle');
             var ghost = this.add.image(0, 0, 'ghost');
@@ -48,8 +46,8 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             ghost.visible = false;
             this.block.setData('key', i);
 
-            let velX = Phaser.Math.Between(200, 300);
-            let velY = Phaser.Math.Between(200, 300);
+            let velX = Phaser.Math.Between(100, 400);
+            let velY = Phaser.Math.Between(100, 400);
 
             sprites[i] = {
                 clicked: false,
@@ -72,9 +70,6 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             else {
                 this.block.body.velocity.y *= -1;
             }
-
-            velX = this.block.body.velocity.x;
-            velY = this.block.body.velocity.y;
 
             //ghost sizer
             let randSize = (velX + velY) * .0035;
@@ -133,11 +128,14 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
         this.add.text(600,32, `Room Code: ${this.gameCode}`)
     }
 
-    // addPlayer(id) {
-    //     this.otherPlayers.push(id);
-    //     console.log(`you are player ${this.socket.id} and other players are ${this.otherPlayers}`)
-    // }
-
+    onEvent () {
+        this.initialTime -= 1;
+        this.text.setText('Time Remaining: ' + this.formatTime(this.initialTime));
+        if (this.initialTime <= 0 || window.gameOver){
+            this.timedEvent.remove(false);
+        }
+    }
+    
     formatTime(seconds){
         var minutes = Math.floor(seconds/60);
         var partInSeconds = seconds%60;
@@ -192,13 +190,5 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
             window.gameOver = true;
         }
         this.socket.emit("clicked", key);
-    }
-
-    onEvent () {
-        this.initialTime -= 1;
-        this.text.setText('Time Remaining: ' + this.formatTime(this.initialTime));
-        if (this.initialTime <= 0 || window.gameOver){
-            this.timedEvent.remove(false);
-        }
     }
 }

@@ -33,14 +33,14 @@ export default class MultiPlayerHomeScene extends Phaser.Scene {
                     text = this.add.text(320,350, 'Invalid game code.')
                 });
                 this.socket.on('joinGame', () => {
-                    this.scene.start('MultiPlayerGame', { socket: this.socket, gameCode: gameCode.value});
+                    this.scene.start('MultiPlayerLobby', { socket: this.socket, gameCode: gameCode.value});
                 });
             } else {
                 text = this.add.text(250,100, "Submit game code or create new game");
             }
         });
         this.socket.on('newGame', (gameCode) => {
-            this.scene.start('MultiPlayerGame', { socket: this.socket, gameCode: gameCode});
+            this.scene.start('MultiPlayerLobby', { socket: this.socket, gameCode: gameCode});
         });
 
 

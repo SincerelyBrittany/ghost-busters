@@ -45,13 +45,17 @@ io.on('connection', function (socket) {
         rooms[socket.id] = roomName;
         socket.join(roomName);
         const room = io.sockets.adapter.rooms[roomName];
-        socket.emit('newGame', roomName);
-        let usersInRoom = Object.keys(room.sockets);
-        if (usersInRoom[0] === socket.id) {
+        let users = Object.keys(room.sockets);
+        // if this socket was the first person in the room,
+        // they must have created the room and therefore are the owner/controller
+        if (users[0] === socket.id) {
             console.log('newGame owner');
-            // WHY ISN"T THIS WORKING
-            io.to(socket.id).emit('isOwner');
+            socket.on('hello', msg => {
+                // for some reason this line won't emit unless i have this 'hello' socket on
+                io.to(socket.id).emit('isOwner');
+            });
         };
+        socket.emit('newGame', roomName);
     });
 
     socket.on('joinGame', (roomName) => {
@@ -73,6 +77,11 @@ io.on('connection', function (socket) {
             socket.emit('unknownCode');
         }
     });
+
+    socket.on('startGame', () => {
+        console.log('startGame');
+        socket.broadcast.emit('startGame');
+    })
 
     function getPlayers() {
         var players = [];
