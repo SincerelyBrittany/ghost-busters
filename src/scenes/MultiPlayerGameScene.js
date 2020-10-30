@@ -120,6 +120,7 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
                     }
                 })
         }
+        this.text = this.add.text(32,32, '' );
 
         //time for game
         let that = this
@@ -131,9 +132,9 @@ export default class MultiPlayerGameScene extends Phaser.Scene {
     }
 
     timers (i) {
-        console.log("you are in timer", i)
-        this.initialTime = i
-        this.text = this.add.text(32,32, 'Time Remaining: ' + this.initialTime );
+        console.log("you are in timer", i);
+        this.initialTime = i;
+        this.text.setText('Time Remaining: ' + this.initialTime );
         this.timedEvent = this.time.addEvent({ delay: 1000, callback: this.onEvent, callbackScope: this, loop: true});
         this.add.text(600,32, `Room Code: ${this.gameCode}`)
     }
