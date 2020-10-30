@@ -2,15 +2,10 @@ import "phaser";
 import logoImg from "../assets/logo.png";
 import ghostImg from "../assets/ghost.png";
 import candleImg from "../assets/candle.png";
-import config from "../config/config";
 
 export default class GameScene extends Phaser.Scene{
     constructor() {
         super('Game');
-    }
-
-    init(data) {
-        this.socket = data.socket;
     }
 
     preload(){
